@@ -1,4 +1,3 @@
-const { useRef } = require("react")
 const User = require("../models/user.model")
 const bcrypt = require('bcrypt');
 const multer = require('multer');

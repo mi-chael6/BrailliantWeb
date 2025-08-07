@@ -8,7 +8,6 @@ module.exports = app => {
     app.put('/api/update/user/:id', UserController.updateUser);
     app.delete('/api/delete/user/:id', UserController.deleteUser);
 
-    // Profile image upload route
     app.put(
         '/upload-profile-icon/:id',
         UserController.uploadProfileIconMiddleware,
