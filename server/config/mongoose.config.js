@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb+srv://brailliant_db:<brailliant_db>@cluster0.5tlakc1.mongodb.net/brailliant_db?retryWrites=true&w=majority&appName=Cluster0', {
+mongoose.connect('mongodb://127.0.0.1:27017/trykolangpls', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
