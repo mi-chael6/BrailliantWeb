@@ -1,50 +1,50 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import Homepage from './pages/archive/home/components/Homepage';
-import Dashboard from './pages/archive/dashboard/components/Dashboard';
-import Materials from './pages/archive/materials/components/Materials';
-import UploadMaterial from './pages/archive/upload materials/components/UploadMaterial';
-import CustomText from './pages/archive/custom text/components/CustomText';
-import UserEdit from './pages/archive/edit/components/UserEdit';
+import Homepage from './src/pages/archive/home/components/Homepage';
+import Dashboard from './src/pages/archive/dashboard/components/Dashboard';
+import Materials from './src/pages/archive/materials/components/Materials';
+import UploadMaterial from './src/pages/archive/upload materials/components/UploadMaterial';
+import CustomText from './src/pages/archive/custom text/components/CustomText';
+import UserEdit from './src/pages/archive/edit/components/UserEdit';
 
-import AdminDashboard from './pages/archive/admin/dashboard/components/AdminDashboard';
-import Account from './pages/archive/admin/account/Account';
-import CreateAccount from './pages/archive/admin/create/components/CreateAccount';
-import UpdateAccount from './pages/archive/admin/update/UpdateAccount';
+import AdminDashboard from './src/pages/archive/admin/dashboard/components/AdminDashboard';
+import Account from './src/pages/archive/admin/account/Account';
+import CreateAccount from './src/pages/archive/admin/create/components/CreateAccount';
+import UpdateAccount from './src/pages/archive/admin/update/UpdateAccount';
 //import AuditTrail from './pages/archive/admin/audit trail/AuditTrail';
 
-import MaterialsCharacter from './pages/archive/materials character/MaterialsCharacter';
-import Header from './global/components/user/Header'
+import MaterialsCharacter from './src/pages/archive/materials character/MaterialsCharacter';
+import Header from './src/global/components/user/Header'
 
-import LandingPage from './pages/user/landing page/components/LandingPage';
-import Home from './pages/user/home/components/Home';
-import DashboardHeader from './global/components/user/DashboardHeader';
-import Library from './pages/user/library/components/Library';
-import ClassSettings from './pages/user/class settings/components/ClassSettings';
-import UploadBooks from './pages/user/upload/components/UploadBooks';
-import TextToBraille from './pages/user/text-to-braille/components/TextToBraille';
-import Profile from './pages/user/profile/components/Profile';
-import DeviceSettings from './pages/user/devide settings/components/DeviceSettings';
-import Analytics from './pages/user/analytics/components/Analytics';
-import EditSection from './pages/user/edit section/components/EditSection';
-import CreateSection from './pages/user/create section/components/CreateSection';
-import AddStudent from './pages/user/add student/components/AddStudent';
-import ViewStudent from './pages/user/view student/components/ViewStudent';
-import EditProfile from './pages/user/edit user/components/EditProfile';
-import BookDetails from './pages/user/book details/components/BookDetails';
-import BookSession from './pages/user/book session/components/BookSession';
-import AdminHome from './pages/aadmin/admin home/components/AdminHome';
-import ManageLibrary from './pages/aadmin/manage library/components/ManageLibrary';
-import ManageAccounts from './pages/aadmin/manage accounts/components/ManageAccounts';
-import ContentRequest from './pages/aadmin/content request/components/ContentRequest';
-import AdminUploadBooks from './pages/aadmin/admin upload books/components/AdminUploadBooks';
-import AdminCreateAccount from './pages/aadmin/admin create account/components/AdminCreateAccount';
-import AccountActivation from './pages/user/account activation/components/AccountActivation';
-import AdminViewBook from './pages/aadmin/admin view book/components/AdminViewBook';
-import AdminViewReal from './pages/aadmin/admin view real/components/AdminViewReal';
-import AdminCreateAccountTempt from './pages/aadmin/admin create temporary/components/AdminCreateAccountTempt';
-import AdminEditUser from './pages/aadmin/admin edit user/components/AdminEditUser';
-import EditStudent from './pages/user/edit student/components/EditStudent';
-import AuditTrail from './pages/aadmin/audit trail/AuditTrail';
+import LandingPage from './src/pages/user/landing page/components/LandingPage';
+import Home from './src/pages/user/home/components/Home';
+import DashboardHeader from './src/global/components/user/DashboardHeader';
+import Library from './src/pages/user/library/components/Library';
+import ClassSettings from './src/pages/user/class settings/components/ClassSettings';
+import UploadBooks from './src/pages/user/upload/components/UploadBooks';
+import TextToBraille from './src/pages/user/text-to-braille/components/TextToBraille';
+import Profile from './src/pages/user/profile/components/Profile';
+import DeviceSettings from './src/pages/user/devide settings/components/DeviceSettings';
+import Analytics from './src/pages/user/analytics/components/Analytics';
+import EditSection from './src/pages/user/edit section/components/EditSection';
+import CreateSection from './src/pages/user/create section/components/CreateSection';
+import AddStudent from './src/pages/user/add student/components/AddStudent';
+import ViewStudent from './src/pages/user/view student/components/ViewStudent';
+import EditProfile from './src/pages/user/edit user/components/EditProfile';
+import BookDetails from './src/pages/user/book details/components/BookDetails';
+import BookSession from './src/pages/user/book session/components/BookSession';
+import AdminHome from './src/pages/aadmin/admin home/components/AdminHome';
+import ManageLibrary from './src/pages/aadmin/manage library/components/ManageLibrary';
+import ManageAccounts from './src/pages/aadmin/manage accounts/components/ManageAccounts';
+import ContentRequest from './src/pages/aadmin/content request/components/ContentRequest';
+import AdminUploadBooks from './src/pages/aadmin/admin upload books/components/AdminUploadBooks';
+import AdminCreateAccount from './src/pages/aadmin/admin create account/components/AdminCreateAccount';
+import AccountActivation from './src/pages/user/account activation/components/AccountActivation';
+import AdminViewBook from './src/pages/aadmin/admin view book/components/AdminViewBook';
+import AdminViewReal from './src/pages/aadmin/admin view real/components/AdminViewReal';
+import AdminCreateAccountTempt from './src/pages/aadmin/admin create temporary/components/AdminCreateAccountTempt';
+import AdminEditUser from './src/pages/aadmin/admin edit user/components/AdminEditUser';
+import EditStudent from './src/pages/user/edit student/components/EditStudent';
+import AuditTrail from './src/pages/aadmin/audit trail/AuditTrail';
 
 
 function App() {
