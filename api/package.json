@@ -29,6 +29,7 @@
     "path": "^0.12.7",
     "pdf-parse": "^1.1.1",
     "serialport": "^13.0.0",
+    "serverless-http": "^3.2.0",
     "textract": "^2.5.0",
     "xss-clean": "^0.1.4"
   },

@@ -1,6 +1,7 @@
 const express = require("express")
 const mongoose = require('mongoose')
 const cors = require('cors')
+const serverless = require('serverless-http');
 
 const app = express();
 const port = 8000;
@@ -78,8 +79,11 @@ app.listen(port, () => {
 })
 
 
+app.get('/api/hello', (req, res) => {
+    res.json({ message: 'Hello from Express API!' });
+});
 
-
+module.exports = serverless(app);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
