@@ -20,6 +20,16 @@ const nodemailer = require('nodemailer')
 // app.use(xss());               
 // app.use(mongoSanitize());  
 
+const louPath = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\bin\\lou_translate.exe"`;
+const table = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\share\\liblouis\\tables\\en-us-g2.ctb"`;
+const tempTxtPath = "C:\\Users\\micha\\Downloads\\test.txt"; // Example input
+const brfFilePath = "C:\\Users\\micha\\Downloads\\output.brf"; // Example output
+
+const cmd = `${louPath} ${table} "${tempTxtPath}" > "${brfFilePath}"`;
+
+
+
+
 
 
 app.use('/files', express.static("files"))
@@ -56,8 +66,15 @@ allRequestBookRoutes(app)
 const AuthRoutes = require('./routes/login.route');
 AuthRoutes(app);
 
+const ArduinoRoutes = require('./routes/arduino.route');
+ArduinoRoutes(app);
+
+const EmailRoutes = require('./routes/email.route');
+EmailRoutes(app);
+
+
 app.listen(port, () => {
-    console.log('server is running')
+    console.log('server is running', port)
 })
 
 
@@ -66,7 +83,7 @@ app.listen(port, () => {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+/*
 
 const bodyParser = require('body-parser');
 const { SerialPort } = require('serialport');
@@ -110,7 +127,7 @@ app.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`);
 });
 
-
+*/
 
 
 
@@ -143,7 +160,6 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({ storage: storage })
 
 require("./models/file.model")
 const FileSchema = mongoose.model("File")
@@ -156,7 +172,7 @@ const RequestBook = mongoose.model("RequestBook")
 
 require("./models/user.model")
 const User = mongoose.model("User")
-
+/*
 app.put('/upload-files/:id', upload.single("file"), async (req, res) => {
     console.log(req.file)
     res.send("HI")
@@ -175,7 +191,9 @@ app.put('/upload-files/:id', upload.single("file"), async (req, res) => {
         res.status(500).json({ status: "error", error: error.message });
     }
 })
+*/
 
+/*
 app.put('/upload-requestfiles/:id', upload.single("file"), async (req, res) => {
     console.log(req.file)
 
@@ -195,8 +213,8 @@ app.put('/upload-requestfiles/:id', upload.single("file"), async (req, res) => {
         res.status(500).json({ status: "error", error: error.message });
     }
 })
-
-
+*/
+/*
 app.get("/get-files", async (req, res) => {
     try {
         Book.find({}).then(data => {
@@ -214,7 +232,7 @@ app.get("/get-requestfiles", async (req, res) => {
     } catch (error) {
     }
 })
-
+*/
 
 
 
@@ -232,7 +250,7 @@ const storages = multer.diskStorage({
 })
 
 const uploads = multer({ storage: storages })
-
+/*
 app.put('/upload-image/:id', uploads.single('image'), async (req, res) => {
     console.log(req.body)
     const imageName = req.file.filename
@@ -249,7 +267,9 @@ app.put('/upload-image/:id', uploads.single('image'), async (req, res) => {
         res.json({ status: 'error' })
     }
 })
+*/
 
+/*
 app.put('/upload-requestimage/:id', uploads.single('image'), async (req, res) => {
     console.log(req.body)
     const imageName = req.file.filename
@@ -266,7 +286,9 @@ app.put('/upload-requestimage/:id', uploads.single('image'), async (req, res) =>
         res.json({ status: 'error' })
     }
 })
+*/
 
+/*
 app.put('/upload-profile-icon/:id', uploads.single('image'), async (req, res) => {
     console.log(req.body)
     const imageName = req.file.filename
@@ -283,7 +305,7 @@ app.put('/upload-profile-icon/:id', uploads.single('image'), async (req, res) =>
         res.json({ status: 'error' })
     }
 })
-
+*/
 
 app.get('/get-image', async (req, res) => {
     try {
@@ -295,7 +317,7 @@ app.get('/get-image', async (req, res) => {
 
     }
 })
-
+/*
 app.get('/get-requestimage', async (req, res) => {
     try {
         RequestBook.find({}).then(data => {
@@ -306,7 +328,9 @@ app.get('/get-requestimage', async (req, res) => {
 
     }
 })
+*/
 
+/*
 app.get('/get-profile-icon', async (req, res) => {
     try {
         User.find({}).then(data => {
@@ -317,6 +341,7 @@ app.get('/get-profile-icon', async (req, res) => {
 
     }
 })
+*/
 
 
 
@@ -324,8 +349,7 @@ app.get('/get-profile-icon', async (req, res) => {
 
 
 
-
-
+/*
 
 app.post('/extract-text', async (req, res) => {
     const { filename } = req.body;
@@ -349,7 +373,8 @@ app.post('/extract-text', async (req, res) => {
         res.status(500).send('Error parsing PDF');
     }
 });
-
+*/
+/*
 app.post('/send-email', async (req, res) => {
     const { subject, text, html } = req.body;
 
@@ -385,3 +410,58 @@ app.post('/send-email', async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to send email.' });
     }
 });
+*/
+
+
+
+
+const { exec } = require('child_process');
+
+const upload = multer({ dest: 'uploads/' }); // Temporary folder
+
+app.post('/upload-pdf-to-brf', upload.single('file'), async (req, res) => {
+    try {
+        const pdfPath = req.file.path;
+        const pdfOriginalName = path.parse(req.file.originalname).name; // e.g., "MyFile"
+        const pdfBuffer = fs.readFileSync(pdfPath);
+        const data = await pdfParse(pdfBuffer);
+
+        const text = data.text;
+        const tempTxtPath = `temp_${Date.now()}.txt`;
+        const brfFilePath = `output_${Date.now()}.brf`;
+
+        fs.writeFileSync(tempTxtPath, text, 'utf8');
+
+        const louPath = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\bin\\lou_translate.exe"`;
+        const table = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\share\\liblouis\\tables\\en-us-g2.ctb"`;
+        const cmd = `${louPath} --forward ${table} < ${tempTxtPath} > ${brfFilePath}`;
+
+        exec(cmd, (error, stdout, stderr) => {
+            fs.unlinkSync(tempTxtPath); // Clean temp .txt
+
+            if (error) {
+                console.error(stderr);
+                return res.status(500).json({ error: 'Translation failed.' });
+            }
+
+            const brfDownloadName = `${pdfOriginalName}.brf`; // ← use the PDF name
+
+            res.download(brfFilePath, brfDownloadName, (err) => {
+                if (!err) {
+                    fs.unlinkSync(pdfPath);       // Clean uploaded PDF
+                    fs.unlinkSync(brfFilePath);   // Clean .brf
+                }
+            });
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Something went wrong.' });
+    }
+});
+
+
+
+
+
+

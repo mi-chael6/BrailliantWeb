@@ -53,3 +53,24 @@
     margin-left: 40px;
     margin-top: 40px;
 }
+
+.as-body-cont{
+    display: flex;
+}
+
+.add-students {
+    margin-top: 20px;
+    background-color: #d5ddff;
+    width: 100%;
+    height: 300px;
+    border-radius: 20px;
+    padding: 20px;
+    margin-right: 50px;
+}
+
+.add-students table {
+    width: 100%;
+    text-align: left;
+    table-layout: fixed;
+    
+}

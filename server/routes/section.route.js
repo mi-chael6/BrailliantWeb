@@ -4,6 +4,7 @@ const SectionController = require('../controllers/section.controller')
 
 module.exports = app => {
     app.get('/api/allsections', SectionController.findAllSection)
+    app.get('/api/allsections/:namex', SectionController.findSectionByTeacher)
     app.get('/api/test', SectionController.testconnection)
     app.post('/api/newsection', SectionController.createSection)
     app.get('/api/section/:namex', SectionController.findSectionByName)

@@ -52,7 +52,21 @@ export default function AdminCreateAccountTempt() {
         });
     };
 
-    const handleCreateUser = () => {
+    const handleCreateUser = async () => {
+
+        try {
+            const response = await axios.post('http://localhost:8000/send-email', {
+                subject: "Hello from React!",
+                text: "This is a plain text email.",
+                html: "<h3>Email:</h3>" + newUser.user_email + "<br/> <h3>Password:</h3>" + newUser.user_password,
+                email: newUser.user_email
+            });
+            alert("Email sent!");
+        } catch (err) {
+            console.error("Failed to send email", err);
+            alert("Failed to send email");
+        }
+
         axios.post('http://localhost:8000/api/newuser', newUser)
             .then(() => {
                 alert("User created successfully!");

@@ -32,6 +32,10 @@ const UserSchema = new Schema({
     role: {
         type: String,
         default: 'user'
+    },
+    user_otp_verified_at: {
+        type: Date,
+        default: null
     }
 })
 

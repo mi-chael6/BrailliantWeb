@@ -189,3 +189,14 @@
     table-layout: fixed;
     
 }
+.cre-section{
+    font-size: 30px;
+    font-weight: bold;
+}
+
+input:disabled,
+select:disabled,
+button:disabled {
+  background-color: #f0f0f0;
+  opacity: 0.6;
+}

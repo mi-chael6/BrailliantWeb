@@ -31,7 +31,7 @@ export default function UploadBooks() {
     const [file, setFile] = useState('')
     const [allImage, setAllImage] = useState(null)
     const [user, setUser] = useState([])
-    
+
     const [selectedImage, setSelectedImage] = useState('')
 
 
@@ -183,14 +183,13 @@ export default function UploadBooks() {
                     <form className="uploadmaterial-container" onSubmit={(e) => {
                         e.preventDefault()
                         handleUploadBook()
-                        submitimage()
 
                     }}>
                         <div className='left-container'>
 
-                            <img 
-                            className='upload-image-container'
-                            src={selectedImage}
+                            <img
+                                className='upload-image-container'
+                                src={selectedImage}
                             />
 
                             <div>
@@ -214,14 +213,16 @@ export default function UploadBooks() {
                             <div className='lower-left-container'>
 
                                 <label for="file-upload" class="custom-file-upload">
-                                    Attach file here
+                                    {file.name ? file.name : "Attach file here"}
                                 </label>
                                 <input
                                     id="file-upload"
                                     type="file"
                                     accept='application/pdf'
                                     required
-                                    onChange={(e) => setFile(e.target.files[0])}
+                                    onChange={(e) => {
+                                        setFile(e.target.files[0])
+                                    }}
 
                                 />
 

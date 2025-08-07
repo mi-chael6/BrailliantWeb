@@ -9,7 +9,6 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Try Admin login first
         const adminRaw = await Admin.findOne({ admin_email: email });
         if (adminRaw) {
             const isMatch = await bcrypt.compare(password, adminRaw.admin_password);
@@ -55,18 +54,21 @@ const handleCredentials = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-
-        // Try Admin login first
+        // Try Admin first
         const adminRaw = await Admin.findOne({ admin_email: email });
-
         if (adminRaw) {
             const isMatch = await bcrypt.compare(password, adminRaw.admin_password);
             if (!isMatch) {
                 return res.status(401).json({ message: 'Invalid admin credentials' });
             }
-            return res.json({ status: 'ok match cla' });
+
+            const lastOtp = adminRaw.admin_otp_verified_at;
+            const requiresOtp = !lastOtp || (new Date() - new Date(lastOtp)) > 7 * 24 * 60 * 60 * 1000;
+
+            return res.json({ status: 'ok match cla', requiresOtp, role: 'admin' });
         }
 
+        // Try User next
         const userRaw = await User.findOne({ user_email: email });
         if (!userRaw) {
             return res.status(401).json({ message: 'Invalid user credentials' });
@@ -77,12 +79,41 @@ const handleCredentials = async (req, res) => {
             return res.status(401).json({ message: 'Invalid user credentials' });
         }
 
-        return res.json({ status: 'ok match cla' });
+        const lastOtp = userRaw.user_otp_verified_at;
+        const requiresOtp = !lastOtp || (new Date() - new Date(lastOtp)) > 7 * 24 * 60 * 60 * 1000;
+
+        return res.json({ status: 'ok match cla', requiresOtp, role: 'user' });
 
     } catch (err) {
         return res.status(500).json({ message: 'Something went wrong', error: err.message });
     }
 };
+
+const markOtpVerified = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        let user = await User.findOneAndUpdate(
+            { user_email: email },
+            { user_otp_verified_at: new Date() },
+            { new: true }
+        );
+        if (user) return res.json({ status: 'updated', role: 'user' });
+
+        let admin = await Admin.findOneAndUpdate(
+            { admin_email: email },
+            { admin_otp_verified_at: new Date() },
+            { new: true }
+        );
+        if (admin) return res.json({ status: 'updated', role: 'admin' });
+
+        return res.status(404).json({ message: 'User/Admin not found' });
+
+    } catch (err) {
+        return res.status(500).json({ message: 'Failed to update OTP timestamp', error: err.message });
+    }
+};
+
 
 const handleEmailVerifiction = async (req, res) => {
     const { email } = req.body;
@@ -127,4 +158,10 @@ const handlePasswordUpdate = async (req, res) => {
     }
 };
 
-module.exports = { login, handleCredentials, handleEmailVerifiction, handlePasswordUpdate };
+module.exports = {
+    login,
+    handleCredentials,
+    handleEmailVerifiction,
+    handlePasswordUpdate,
+    markOtpVerified
+};

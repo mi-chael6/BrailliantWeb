@@ -1,7 +1,10 @@
 {
-  "name": "oneone",
+  "name": "BrailliantWeb",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "14.x"
+  },
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",

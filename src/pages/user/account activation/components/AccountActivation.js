@@ -30,7 +30,6 @@ export default function AccountActivation() {
         setUsers(JSON.parse(localStorage.getItem('users')))
         setEditUser(JSON.parse(localStorage.getItem('users')))
 
-
         const newOtp = generateOTP();
         setOtp(newOtp);
         sendEmail(newOtp);
@@ -42,11 +41,13 @@ export default function AccountActivation() {
     };
 
     const sendEmail = async (generatedOtp) => {
+        console.log(users)
         try {
             const response = await axios.post('http://localhost:8000/send-email', {
                 subject: "Hello from React!",
                 text: "This is a plain text email.",
-                html: "<h3>This is your account activation OTP</h3>" + generatedOtp
+                html: "<h3>This is your account activation OTP</h3>" + generatedOtp,
+                email:user.user_email
             });
             alert("Email sent!");
         } catch (err) {

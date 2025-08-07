@@ -39,6 +39,10 @@ export default function CreateSection() {
         at_user: '',
     });
 
+    const [isStudentFormEnabled, setIsStudentFormEnabled] = useState(false);
+    const [isCreateButtonDisabled, setIsCreateButtonDisabled] = useState(false);
+
+
     const clearForm = () => {
         setNewSection({
             section_name: '',
@@ -49,13 +53,14 @@ export default function CreateSection() {
     const handleAddStudent = (e) => {
         e.preventDefault();
         console.log('this the id', sectionId);
-
+        console.log('this the instructor id', users._id);
         axios.put(`http://localhost:8000/api/update/user/${users._id}`, { user_recent_act: 'Added Student' })
 
         const updatedData = {
             ...newStudent,
             student_section_name: section.section.section_name,
-            student_section: sectionId
+            student_section: sectionId,
+            student_instructor: users._id
         }
 
         axios.post('http://localhost:8000/api/newstudent', updatedData)
@@ -81,13 +86,24 @@ export default function CreateSection() {
     const handleCreateSection = async (e) => {
         e.preventDefault();
         if (!newSection.section_level) {
-            alert("Please select a section.");
+            alert("Please select a section level.");
+            return;
+        }
+        if (!newSection.section_name) {
+            alert("Please enter section name.");
             return;
         }
 
+        setIsStudentFormEnabled(true);
+        setIsCreateButtonDisabled(true);
+
+
         axios.put(`http://localhost:8000/api/update/user/${users._id}`, { user_recent_act: 'Created Section' })
 
-        axios.post('http://localhost:8000/api/newsection', newSection, { section_instructor: users._id })
+        axios.post('http://localhost:8000/api/newsection', {
+            ...newSection,
+            section_instructor: users._id
+        })
             .then(async (response) => {
                 alert("Section created successfully!");
                 //clearForm();
@@ -98,7 +114,7 @@ export default function CreateSection() {
                 try {
                     const result = await axios.get(`http://localhost:8000/api/section/${newId}`);
                     setSection(result.data);
-                    console.log('newly created:', result.data);
+                    console.log('newly created:', result.data.section.section_name);
                 } catch (fetchError) {
                     console.error("Error fetching newly created section:", fetchError);
                 }
@@ -165,7 +181,7 @@ export default function CreateSection() {
                     <div className='cre-s'>
 
                         <div className='cre-try'>
-                            <button className='back-btn' onClick={() => { navigate(-1) }}><img src={require('../../../../global/asset/back.png')} /></button>
+                            <button className='back-btn' onClick={() => { navigate(-1) }}><img src={require('../../../../global/asset/back.png')} />   <label className='cre-section'>{section?.section?.section_name || "Enter Section"}</label></button>
 
                             <form className='section-create'>
                                 <div className='c1'>
@@ -194,7 +210,14 @@ export default function CreateSection() {
                                     </div>
                                 </div>
                                 <div>
-                                    <button onClick={handleCreateSection} className='sect-save'>Create</button>
+                                    <button
+                                        onClick={handleCreateSection}
+                                        className='sect-save'
+                                        disabled={isCreateButtonDisabled}
+                                    >
+                                        Create
+                                    </button>
+
                                 </div>
 
 
@@ -208,6 +231,8 @@ export default function CreateSection() {
                                         required
                                         value={newStudent.student_lname}
                                         onChange={(e) => setNewStudent({ ...newStudent, student_lname: e.target.value })}
+                                        disabled={!isStudentFormEnabled}
+
                                     />
                                     <div className='c1'>
                                         <div className='c2'>
@@ -217,6 +242,7 @@ export default function CreateSection() {
                                                 required
                                                 value={newStudent.student_fname}
                                                 onChange={(e) => setNewStudent({ ...newStudent, student_fname: e.target.value })}
+                                                disabled={!isStudentFormEnabled}
                                             />
                                         </div>
                                         <div className='c2'>
@@ -227,6 +253,7 @@ export default function CreateSection() {
                                                 type='text'
                                                 value={newStudent.student_mi}
                                                 onChange={(e) => setNewStudent({ ...newStudent, student_mi: e.target.value })}
+                                                disabled={!isStudentFormEnabled}
                                             />
                                         </div>
                                     </div>
@@ -239,6 +266,7 @@ export default function CreateSection() {
                                                 type='date'
                                                 value={newStudent.student_dob}
                                                 onChange={(e) => setNewStudent({ ...newStudent, student_dob: e.target.value })}
+                                                disabled={!isStudentFormEnabled}
                                             />
                                         </div>
                                         <div className='c2'>
@@ -246,6 +274,7 @@ export default function CreateSection() {
                                             <select
                                                 value={newStudent.student_gender}
                                                 onChange={(e) => setNewStudent({ ...newStudent, student_gender: e.target.value })}
+                                                disabled={!isStudentFormEnabled}
                                             >
                                                 <option value="">Select Gender</option>
                                                 <option value="Male">Male</option>
@@ -255,8 +284,16 @@ export default function CreateSection() {
                                         </div>
                                     </div>
                                     <div className='create-section-buttons'>
-                                        <button type='submit' className='add-section'>Add</button>
-                                        <button type='reset' className='clear-form' >Clear</button>
+                                        <button
+                                            type='submit'
+                                            className='add-section'
+                                            disabled={!isStudentFormEnabled}
+                                        >Add</button>
+                                        <button
+                                            type='reset'
+                                            className='clear-form'
+                                            disabled={!isStudentFormEnabled}
+                                        >Clear</button>
                                     </div>
                                 </form>
 

@@ -9,7 +9,9 @@ import axios from 'axios';
 export default function EditProfile() {
     const navigate = useNavigate()
     const [showDropdown, setShowDropdown] = useState(false);
+    const [activeForm, setActiveForm] = useState('profile');
     const [users, setUsers] = useState([])
+
     const [editUser, setEditUser] = useState({
         user_fname: '',
         user_lname: '',
@@ -18,12 +20,7 @@ export default function EditProfile() {
         user_password: '',
         user_img: ''
     });
-    const [auditTrail, setAuditTrail] = useState({
-        at_action: '',
-        at_date: '',
-        at_user: '',
-    });
-
+    const [cemail, setCemail] = useState('')
     const [cpassword, setCpassword] = useState('')
     const [selectedImage, setSelectedImage] = useState('')
     const [image, setImage] = useState(null)
@@ -80,17 +77,17 @@ export default function EditProfile() {
             alert("Date of Birth cannot be in the future.");
             return;
         }
-/** 
-        if (!user_password) {
-            alert("Password is required.");
-            return;
-        }
-
-        if (user_password !== cpassword) {
-            alert("Passwords do not match!");
-            return;
-        }
-*/
+        /** 
+                if (!user_password) {
+                    alert("Password is required.");
+                    return;
+                }
+        
+                if (user_password !== cpassword) {
+                    alert("Passwords do not match!");
+                    return;
+                }
+        */
         //submitimage(editUser._id)
         handleProfileUpdate(editUser._id);
         alert("Update Successful!");
@@ -99,7 +96,6 @@ export default function EditProfile() {
 
     const handleProfileUpdate = async (id) => {
         try {
-            // 1. Upload Image (if any)
             let updatedImage = null;
             if (image) {
                 const formData = new FormData();
@@ -118,29 +114,25 @@ export default function EditProfile() {
                 console.log('Image updated to:', updatedImage);
             }
 
-            // 2. Update Profile Data
             const updatedData = {
                 ...editUser,
                 user_recent_act: 'Edited Profile',
-                ...(updatedImage && { user_img: updatedImage }) // If image was updated
+                ...(updatedImage && { user_img: updatedImage })
             };
 
             await axios.put(`http://localhost:8000/api/update/user/${id}`, updatedData);
 
-            // 3. Update localStorage and state
             localStorage.setItem('users', JSON.stringify(updatedData));
             setEditUser(prev => ({ ...prev, user_password: '' }));
             setCpassword('');
             setUsers(updatedData);
             navigate(0);
 
-            // 4. Log to Audit Trail
             const newAudit = {
                 at_user: users.user_email,
                 at_date: new Date(),
                 at_action: 'Edited Profile'
             };
-            setAuditTrail(newAudit);
             await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
 
             console.log('Profile updated:', updatedData);
@@ -150,6 +142,79 @@ export default function EditProfile() {
             console.error('Profile update failed:', error);
         }
     };
+
+    const handlePasswordSave = async () => {
+        if (editUser.user_password !== cpassword) {
+            alert("Passwords do not match.");
+            return;
+        }
+
+        try {
+            const response = await axios.put('http://localhost:8000/api/update-password', {
+                password: editUser.user_password,
+                email: editUser.user_email
+            });
+
+            alert('Password updated successfully!');
+            setActiveForm('profile');
+            setEditUser({ ...editUser, user_password: '' });
+            setCpassword('');
+        } catch (error) {
+            console.error("Password update failed:", error);
+            alert("Password update failed.");
+        }
+    };
+
+    const handleEmailSave = async () => {
+        try {
+            if (editUser.user_password !== cpassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+            const response = await axios.post("http://localhost:8000/api/handle-credentials", {
+                email: users.user_email, 
+                password: editUser.user_password,
+            });
+            console.log(response.data)
+
+            if (!response.data) {
+                alert("Invalid credentials.");
+                return;
+            }
+
+            const updatedData = {
+                user_email: cemail,
+                user_recent_act: 'Edited Profile',
+            };
+
+            const result = await axios.put(`http://localhost:8000/api/update/user/${editUser._id}`, updatedData);
+
+            alert("Email successfully changed!");
+            console.log(result);
+
+            const updatedUser = { ...editUser, ...updatedData, user_password: '' };
+            localStorage.setItem('users', JSON.stringify(updatedUser));
+
+            setEditUser(updatedUser);
+            setCpassword('');
+            setActiveForm('profile');
+            navigate(0);
+
+            const newAudit = {
+                at_user: cemail,
+                at_date: new Date(),
+                at_action: 'Changed Email',
+            };
+            await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+
+        } catch (error) {
+            console.error(error);
+            alert("Incorrect Password.");
+        }
+    };
+
+
 
 
 
@@ -218,62 +283,115 @@ export default function EditProfile() {
                                 </div>
                                 <div className='form-container' >
 
-                                    <div className="profile-form">
-                                        <div className='form-row1' >
-                                            <p>First Name</p>
-                                            <p>Last Name</p>
-                                        </div>
-                                        <div className="form-row2">
-                                            <input
-                                                type="text"
-                                                placeholder="First Name"
-                                                value={editUser.user_fname}
-                                                onChange={(e) => setEditUser({ ...editUser, user_fname: e.target.value })}
+                                    {activeForm === 'profile' && (
+                                        <div className="profile-form">
+                                            <div className='form-row1' >
+                                                <p>First Name</p>
+                                                <p>Last Name</p>
+                                            </div>
+                                            <div className="form-row2">
+                                                <input
+                                                    type="text"
+                                                    placeholder="First Name"
+                                                    value={editUser.user_fname}
+                                                    onChange={(e) => setEditUser({ ...editUser, user_fname: e.target.value })}
 
-                                            />
+                                                />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Last Name"
+                                                    value={editUser.user_lname}
+                                                    onChange={(e) => setEditUser({ ...editUser, user_lname: e.target.value })}
+                                                />
+                                            </div>
+                                            <p>Email</p>
                                             <input
-                                                type="text"
-                                                placeholder="Last Name"
-                                                value={editUser.user_lname}
-                                                onChange={(e) => setEditUser({ ...editUser, user_lname: e.target.value })}
+                                                type="email"
+                                                placeholder="Email"
+                                                value={editUser.user_email}
+                                                onChange={(e) => setEditUser({ ...editUser, user_email: e.target.value })}
                                             />
+                                            <p>Date of Birth</p>
+                                            <input
+                                                type="date"
+                                                placeholder="Date of Birth"
+                                                value={editUser.user_dob}
+                                                onChange={(e) => setEditUser({ ...editUser, user_dob: e.target.value })}
+                                            />
+                                            <div className='change-actions'>
+                                                <button type="button" onClick={() => setActiveForm('password')}>Change Password</button>
+                                                <button type="button" onClick={() => setActiveForm('email')}>Change Email</button>
+                                            </div>
+                                            <div className="form-actions">
+                                                <button onClick={confirmPassword} className="editsave-btn">Save</button>
+                                                <button onClick={() => { navigate('/profile') }} type="button" className="cancel-btn">Back</button>
+                                            </div>
                                         </div>
-                                        <p>Email</p>
-                                        <input
-                                            type="email"
-                                            placeholder="Email"
-                                            value={editUser.user_email}
-                                            onChange={(e) => setEditUser({ ...editUser, user_email: e.target.value })}
-                                        />
-                                        <p>Date of Birth</p>
-                                        <input
-                                            type="date"
-                                            placeholder="Date of Birth"
-                                            value={editUser.user_dob}
-                                            onChange={(e) => setEditUser({ ...editUser, user_dob: e.target.value })}
-                                        />
-                                        {/** 
-                                        <p>Password</p>
-                                        <input
-                                            type="password"
-                                            placeholder="Enter new password"
-                                            value={editUser.user_password}
-                                            onChange={(e) => setEditUser({ ...editUser, user_password: e.target.value })}
-                                        />
+                                    )}
 
-                                        <p>Confirm Password</p>
-                                        <input
-                                            type="password"
-                                            placeholder="Re-enter new password"
-                                            value={cpassword}
-                                            onChange={(e) => setCpassword(e.target.value)}
-                                        />
-*/}
-                                        <div className="form-actions">
-                                            <button onClick={confirmPassword} className="editsave-btn">Save</button>
-                                            <button onClick={() => { navigate('/profile') }} type="button" className="cancel-btn">Back</button>
+                                    {/* CHANGE PASSWORD FORM */}
+                                    {activeForm === 'password' && (
+                                        <div className='change-password-form'>
+                                            <p>New Password</p>
+                                            <input
+                                                type="password"
+                                                placeholder="Enter new password"
+                                                value={editUser.user_password}
+                                                onChange={(e) => setEditUser({ ...editUser, user_password: e.target.value })}
+                                            />
+                                            <p>Confirm Password</p>
+                                            <input
+                                                type="password"
+                                                placeholder="Re-enter new password"
+                                                value={cpassword}
+                                                onChange={(e) => setCpassword(e.target.value)}
+                                            />
+                                            <div className="form-actions">
+                                                <button className="editsave-btn" onClick={handlePasswordSave}>Save</button>
+                                                <button type="button" className="cancel-btn" onClick={() => {
+                                                    setActiveForm('profile')
+                                                    setCpassword('')
+                                                    setEditUser({ ...editUser, user_password: '' });
+                                                }}>Back</button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
+
+                                    {/* CHANGE EMAIL FORM */}
+                                    {activeForm === 'email' && (
+                                        <div className='change-email-form'>
+                                            <p>New Email</p>
+                                            <input
+                                                type="email"
+                                                placeholder="Email"
+                                                value={cemail}
+                                                onChange={(e) => setCemail(e.target.value)}
+                                            />
+                                            <p>Password</p>
+                                            <input
+                                                type="password"
+                                                placeholder="Enter new password"
+                                                value={editUser.user_password}
+                                                onChange={(e) => setEditUser({ ...editUser, user_password: e.target.value })}
+                                            />
+                                            <p>Confirm Password</p>
+                                            <input
+                                                type="password"
+                                                placeholder="Re-enter new password"
+                                                value={cpassword}
+                                                onChange={(e) => setCpassword(e.target.value)}
+                                            />
+                                            <div className="form-actions">
+                                                <button className="editsave-btn" onClick={handleEmailSave}>Save</button>
+                                                <button type="button" className="cancel-btn" onClick={() => {
+                                                    setActiveForm('profile')
+                                                    setCpassword('')
+                                                    setEditUser({ ...editUser, user_password: '' });
+                                                }}>Back</button>
+                                            </div>
+                                        </div>
+                                    )}
+
                                 </div>
 
                             </div>

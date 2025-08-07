@@ -26,6 +26,18 @@ const findSectionByName = (req, res) => {
         })
 }
 
+const findSectionByTeacher = (req, res) => {
+    Section.find({ section_instructor: req.params.namex })
+        .then((theSection) => {
+            res.json({ sections: theSection })
+        })
+        .catch((err) => {
+            res.json({ message: 'Something went wrong', err })
+        })
+}
+
+
+
 const findSectionById = (req, res) => {
     Section.findById(req.params.id)
         .then((theSection) => {
@@ -83,4 +95,4 @@ const getSectionCount = async (req, res) => {
     }
 };
 
-module.exports = { findAllSection, testconnection, createSection, updateSection, deleteSection, findSectionByName, getSectionCount, findSectionById }
+module.exports = { findAllSection, testconnection, createSection, updateSection, deleteSection, findSectionByName, getSectionCount, findSectionById, findSectionByTeacher }

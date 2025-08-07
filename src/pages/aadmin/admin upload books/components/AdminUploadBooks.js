@@ -125,7 +125,7 @@ export default function AdminUploadBooks() {
             file ? URL.createObjectURL(file) : undefined
         )
     }
-
+    
     const [allImages, setAllImages] = useState(null)
 
 
@@ -134,7 +134,7 @@ export default function AdminUploadBooks() {
         console.log(result)
         setAllImages(result.data.data)
     }
-
+    
 
     return (
         <div className='container'>
@@ -152,7 +152,7 @@ export default function AdminUploadBooks() {
                     <form className="uploadmaterial-container" onSubmit={(e) => {
                         e.preventDefault()
                         handleUploadBook()
-                        submitimage()
+                        
 
                     }}>
                         <div className='left-container'>

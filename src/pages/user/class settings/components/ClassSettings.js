@@ -20,43 +20,28 @@ export default function ClassSettings() {
 
     const [searchQuery, setSearchQuery] = useState('');
 
-
+    const user = JSON.parse(localStorage.getItem('users'));
 
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/allsections')
+        axios.get(`http://localhost:8000/api/allsections/${user._id}`)
             .then((response) => {
+                setSectionCount(response.data.sections.length)
                 console.log(response.data)
                 setSections(response.data)
             })
             .catch((error) => {
                 console.log("eto ang error mo " + error)
             })
-        axios.get('http://localhost:8000/api/allstudents')
+        axios.get(`http://localhost:8000/api/allstudents/${user._id}`)
             .then((response) => {
+                setStudentCount(response.data.students.length)
                 console.log(response.data)
                 setStudents(response.data)
             })
             .catch((error) => {
                 console.log("eto ang error mo " + error)
             })
-
-        axios.get('http://localhost:8000/api/students/count')
-            .then((response) => {
-                setStudentCount(response.data.count);
-            })
-            .catch((error) => {
-                console.error('Error fetching student count:', error);
-            });
-
-        axios.get('http://localhost:8000/api/sections/count')
-            .then((response) => {
-                setSectionCount(response.data.count);
-            })
-            .catch((error) => {
-                console.error('Error fetching student count:', error);
-            });
-
         setUsers(JSON.parse(localStorage.getItem('users')))
     }, [])
 
@@ -64,6 +49,7 @@ export default function ClassSettings() {
 
     const toggleDropdown = () => {
         setShowDropdown((prev) => !prev);
+        console.log(sections)
     };
     return (
         <div className='container'>

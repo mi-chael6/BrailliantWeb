@@ -23,11 +23,11 @@ const AdminSchema = new Schema({
     role: {
         type: String,
         default: 'admin'
+    },
+    admin_otp_verified_at: {
+        type: Date,
+        default: null
     }
-
-
-
-
 })
 
 const Admin = model('Admin', AdminSchema)

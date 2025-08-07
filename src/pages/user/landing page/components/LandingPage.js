@@ -68,7 +68,8 @@ export default function LandingPage() {
             const response = await axios.post('http://localhost:8000/send-email', {
                 subject: "Hello from React!",
                 text: "This is a plain text email.",
-                html: "<h3>This is your login OTP</h3>" + generatedOtp
+                html: "<h3>This is your login OTP</h3>" + generatedOtp,
+                email: email
             });
             alert("Email sent!");
         } catch (err) {
@@ -81,7 +82,8 @@ export default function LandingPage() {
             const response = await axios.post('http://localhost:8000/send-email', {
                 subject: "Hello from React!",
                 text: "This is a plain text email.",
-                html: "<h3>This is your OTP for password renewal </h3>" + generatedOtp
+                html: "<h3>This is your OTP for password renewal </h3>" + generatedOtp,
+                email: email
             });
             alert("Email sent!");
         } catch (err) {
@@ -131,7 +133,7 @@ export default function LandingPage() {
                 alert("Password renew successfull!.");
                 clearForm()
                 togglePasswordModal()
-                
+
             } catch (error) {
                 console.log(error)
                 alert("Something went wrong in updating.");
@@ -143,39 +145,46 @@ export default function LandingPage() {
         }
     };
 
-    const handleVerify = () => {
-        if (inputOtp === otp) {
-            toggleOTPModal()
-            toggleSuccessfulModal()
+    const handleVerify = async () => {
+    if (inputOtp === otp) {
+        try {
+            await axios.post("http://localhost:8000/api/otp-verified", { email });
+            toggleOTPModal();
+            toggleSuccessfulModal();
+        } catch (err) {
+            alert("Failed to mark OTP verified.");
+        }
+    } else {
+        alert("Invalid OTP.");
+    }
+};
 
-        }
-        else {
-            alert("Invalid OTP.");
-        }
-    };
 
     const handleLogin = async () => {
-        try {
-            const response = await axios.post("http://localhost:8000/api/handle-credentials", {
-                email,
-                password
-            });
-            if (response) {
+    try {
+        const response = await axios.post("http://localhost:8000/api/handle-credentials", {
+            email,
+            password
+        });
 
-                toggleModal()
-                toggleOTPModal()
+        const { requiresOtp } = response.data;
 
-                const newOtp = generateOTP();
-                setOtp(newOtp);
-                sendEmail(newOtp);
+        if (requiresOtp) {
+            toggleModal();
+            toggleOTPModal();
 
-            }
-        } catch (error) {
-            alert("Invalid email or password. Please try again.");
-            clearForm();
+            const newOtp = generateOTP();
+            setOtp(newOtp);
+            sendEmail(newOtp);
+        } else {
+            toggleSuccessfulModal() // skip OTP
         }
-    };
 
+    } catch (error) {
+        alert("Invalid email or password. Please try again.");
+        clearForm();
+    }
+};
     const handleSuccess = async () => {
         try {
             const response = await axios.post("http://localhost:8000/api/login", {
@@ -272,7 +281,6 @@ export default function LandingPage() {
                 <div className='modal'>
                     <div className='overlay' onClick={toggleModal} ></div>
                     <div className='modal-content'>
-
                         <div className='loginmodal'>
                             <button className='close-modal' onClick={toggleModal}>x</button>
                             <h2>Sign In</h2>

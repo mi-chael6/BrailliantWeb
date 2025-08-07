@@ -20,6 +20,7 @@ export default function AddStudent() {
     const [showDropdown, setShowDropdown] = useState(false);
     const [users, setUsers] = useState([])
     const [sections, setSections] = useState([])
+    const [students, setStudents] = useState([])
     const [selectedSection, setSelectedSection] = useState('')
 
     const [newStudent, setNewStudent] = useState({
@@ -33,18 +34,31 @@ export default function AddStudent() {
     });
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/allsections')
+        axios.get(`http://localhost:8000/api/allsections/${user._id}`)
             .then((response) => {
                 setSections(response.data)
+                console.log(response.data)
             })
             .catch((error) => {
                 console.log("eto ang error mo " + error)
             })
         setUsers(JSON.parse(localStorage.getItem('users')))
+        console.log(user._id + " this id")
     }, [])
 
     const toggleDropdown = () => {
         setShowDropdown((prev) => !prev);
+    };
+
+    const studentList = (id) => {
+        axios.get(`http://localhost:8000/api/allstudents/section/${id}`)
+            .then((response) => {
+                setStudents(response.data)
+                console.log(response.data)
+            })
+            .catch((error) => {
+                console.log("eto ang error mo " + error)
+            })
     };
 
     const handleAddStudent = async (e) => {
@@ -90,11 +104,11 @@ export default function AddStudent() {
             return;
         }
         ///////////////////////////////////////////////////////////////////
-        const updatedData = { user_recent_act: 'Added Student' };
+
         axios.get(`http://localhost:8000/api/section/id/${selectedSection}`,)
             .then((res) => {
                 const section = res.data.section.section_name
-                const updatedNewStudent = { ...newStudent, student_section_name: section }
+                const updatedNewStudent = { ...newStudent, student_section_name: section, student_instructor: user._id }
                 axios.post('http://localhost:8000/api/newstudent', updatedNewStudent)
                     .then((res) => {
                         console.log("Student added:", res.data);
@@ -105,9 +119,9 @@ export default function AddStudent() {
                             student_mi: '',
                             student_dob: '',
                             student_gender: '',
-                            student_section: '',
                         });
-                        navigate('/class')
+                        //navigate('/class')
+                        studentList(newStudent.student_section)
                     })
                     .catch((error) => {
                         console.error("Failed to add student", error);
@@ -119,7 +133,7 @@ export default function AddStudent() {
             });
 
         /////////////////////////////////////////////////////////////////////
-
+        const updatedData = { user_recent_act: 'Added Student' };
         axios.put(`http://localhost:8000/api/update/user/${users._id}`, updatedData)
             .then(() => {
                 console.log(updatedData, "this after update");
@@ -165,79 +179,111 @@ export default function AddStudent() {
                     <div className='back-container'>
                         <button className='back-btn' onClick={() => { navigate(-1) }}><img src={require('../../../../global/asset/back.png')} /></button>
                     </div>
-                    <form className='as'>
-                        <div className='as1'>
+                    <div className='as-body-cont'>
+                        <form className='as'>
+                            <div className='as1'>
 
-                            <div className='as2'>
-                                <label>Section:</label>
-                                <select
-                                    value={newStudent.student_section}
-                                    onChange={(e) => {
-                                        setSelectedSection(e.target.value)
-                                        setNewStudent({ ...newStudent, student_section: e.target.value })
-                                    }
-                                    }
-                                >
-                                    <option value="">Select Section</option>
-                                    {sections.sections?.map((section) => (
-                                        <option key={section._id} value={section._id}>
-                                            {section.section_name}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className='as2'>
+                                    <label>Section:</label>
+                                    <select
+                                        value={newStudent.student_section}
+                                        onChange={(e) => {
+                                            setSelectedSection(e.target.value)
+                                            setNewStudent({ ...newStudent, student_section: e.target.value })
+                                            studentList(e.target.value)
+                                        }
+                                        }
+                                    >
+                                        <option value="">Select Section</option>
+                                        {sections.sections?.map((section) => (
+                                            <option key={section._id} value={section._id}>
+                                                {section.section_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
+
+                            <div className='as1'>
+                                <div className='as2'>
+                                    <label>Last Name:</label>
+                                    <input
+                                        type='text'
+                                        value={newStudent.student_lname}
+                                        onChange={(e) => setNewStudent({ ...newStudent, student_lname: e.target.value })}
+                                    />
+                                </div>
+                                <div className='as2'>
+                                    <label>First Name:</label>
+                                    <input
+                                        type='text'
+                                        value={newStudent.student_fname}
+                                        onChange={(e) => setNewStudent({ ...newStudent, student_fname: e.target.value })}
+                                    />
+                                </div>
+                                <div className='as2'>
+                                    <label>Middle Initial:</label>
+                                    <input
+                                        type='text'
+                                        value={newStudent.student_mi}
+                                        onChange={(e) => setNewStudent({ ...newStudent, student_mi: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className='as1'>
+                                <div className='as2'>
+                                    <label>Date of Birth:</label>
+                                    <input
+                                        type='date'
+                                        value={newStudent.student_dob}
+                                        onChange={(e) => setNewStudent({ ...newStudent, student_dob: e.target.value })}
+                                    />
+                                </div>
+                                <div className='as2'>
+                                    <label>Gender:</label>
+                                    <select
+                                        value={newStudent.student_gender}
+                                        onChange={(e) => setNewStudent({ ...newStudent, student_gender: e.target.value })}
+                                    >
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button className='as-add' onClick={handleAddStudent} > <img src={require('../assets/add.png')} />Add Student</button>
+                        </form>
+                        <div className='add-students'>
+                            <table>
+                                <tr>
+                                    <th>Last Name</th>
+                                    <th>First Name</th>
+                                    <th>Middle Initial</th>
+                                    <th>Birthdate</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                </tr>
+
+                                {students.students?.map((student) => (
+                                    <tr
+                                        key={student._id}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <td>{student.student_lname}</td>
+                                        <td>{student.student_fname}</td>
+                                        <td>{student.student_mi}</td>
+                                        <td>{new Date(student.student_dob).toLocaleDateString()}</td>
+                                        <td>{student.student_age}</td>
+                                        <td>{student.student_gender}</td>
+                                    </tr>
+                                ))}
+
+                            </table>
                         </div>
 
-                        <div className='as1'>
-                            <div className='as2'>
-                                <label>Last Name:</label>
-                                <input
-                                    type='text'
-                                    value={newStudent.student_lname}
-                                    onChange={(e) => setNewStudent({ ...newStudent, student_lname: e.target.value })}
-                                />
-                            </div>
-                            <div className='as2'>
-                                <label>First Name:</label>
-                                <input
-                                    type='text'
-                                    value={newStudent.student_fname}
-                                    onChange={(e) => setNewStudent({ ...newStudent, student_fname: e.target.value })}
-                                />
-                            </div>
-                            <div className='as2'>
-                                <label>Middle Initial:</label>
-                                <input
-                                    type='text'
-                                    value={newStudent.student_mi}
-                                    onChange={(e) => setNewStudent({ ...newStudent, student_mi: e.target.value })}
-                                />
-                            </div>
-                        </div>
+                    </div>
 
-                        <div className='as1'>
-                            <div className='as2'>
-                                <label>Date of Birth:</label>
-                                <input
-                                    type='date'
-                                    value={newStudent.student_dob}
-                                    onChange={(e) => setNewStudent({ ...newStudent, student_dob: e.target.value })}
-                                />
-                            </div>
-                            <div className='as2'>
-                                <label>Gender:</label>
-                                <select
-                                    value={newStudent.student_gender}
-                                    onChange={(e) => setNewStudent({ ...newStudent, student_gender: e.target.value })}
-                                >
-                                    <option value="">Select Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button className='as-add' onClick={handleAddStudent} > <img src={require('../assets/add.png')} />Add Student</button>
-                    </form>
                 </div>
             </div>
         </div>

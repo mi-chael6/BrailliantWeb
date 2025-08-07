@@ -27,6 +27,26 @@ const findStudentByName = (req, res) => {
         })
 }
 
+const findStudentByTeacher = (req, res) => {
+    Student.find({ student_instructor: req.params.namex })
+        .then((theStudent) => {
+            res.json({ students: theStudent })
+        })
+        .catch((err) => {
+            res.json({ message: 'Something went wrong', err })
+        })
+}
+
+const findStudentsBySection = (req, res) => {
+    Student.find({ student_section: req.params.namex })
+        .then((theStudent) => {
+            res.json({ students: theStudent })
+        })
+        .catch((err) => {
+            res.json({ message: 'Something went wrong', err })
+        })
+}
+
 const calculateAge = (dob) => {
     const birthDate = new Date(dob);
     const today = new Date();
@@ -49,7 +69,8 @@ const createStudent = (req, res) => {
             ...req.body,
             student_dob: studentDob,
             student_age: studentAge,
-            student_section: new mongoose.Types.ObjectId(req.body.student_section)
+            student_section: new mongoose.Types.ObjectId(req.body.student_section),
+            student_instructor: new mongoose.Types.ObjectId(req.body.student_instructor)
         };
 
         Student.create(studentData)
@@ -110,4 +131,4 @@ const getStudentCount = async (req, res) => {
     }
 };
 
-module.exports = { findAllStudent, testconnection, createStudent, updateStudent, deleteStudent, findStudentByName, getStudentCount, deleteStudentBySection }
+module.exports = { findAllStudent, testconnection, createStudent, updateStudent, deleteStudent, findStudentByName, getStudentCount, deleteStudentBySection, findStudentByTeacher,findStudentsBySection }

@@ -59,7 +59,6 @@
     padding: 0.5rem;
 }
 
-.form-container {}
 
 .profile-form {
     flex: 1;
@@ -102,7 +101,7 @@
 .form-actions {
     display: flex;
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 3rem;
 }
 
 .editsave-btn {
