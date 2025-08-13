@@ -78,7 +78,7 @@ const createStudent = (req, res) => {
             })
             .catch((err) => {
                 console.log("Error creating student:", err);
-                res.status(500).json({ message: 'Something went wrong with creating', err });
+                res.status(500).json({ message: 'Something went wrong with creating ', err });
             });
 
     } catch (error) {
