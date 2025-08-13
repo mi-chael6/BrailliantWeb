@@ -15,7 +15,7 @@ const sendEmail = async (req, res) => {
     try {
         const info = await transporter.sendMail({
             from: '"Braille Translator" <braille@example.com>',
-            to: "michaeljosephmelo464@gmail.com", //email,
+            to:  email,
             subject: subject || "No Subject",
             text: text || "Plain text content",
             html: html || "<b>No HTML content</b>"
