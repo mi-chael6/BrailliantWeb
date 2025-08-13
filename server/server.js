@@ -18,7 +18,7 @@ const nodemailer = require('nodemailer')
 
 // app.use(helmet());             
 // app.use(xss());               
-// app.use(mongoSanitize());  //
+// app.use(mongoSanitize());
 
 const louPath = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\bin\\lou_translate.exe"`;
 const table = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\share\\liblouis\\tables\\en-us-g2.ctb"`;
