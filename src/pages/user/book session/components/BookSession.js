@@ -78,7 +78,7 @@ export default function BookSession() {
     useEffect(() => {
         if (!selectedBook?.book_file) return;
 
-        fetch('http://localhost:8000/extract-text', {
+        fetch('https://brailliantweb.onrender.com/extract-text', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ export default function BookSession() {
         const formatted = brailleArray.map((dots, index) => `M${index + 1}:${dots}`).join('\n');
         console.log(formatted)
 
-        axios.post('http://localhost:8000/send-text', {
+        axios.post('https://brailliantweb.onrender.com/send-text', {
             message: formatted
         });
     }, [currentIndex, resultText]);
@@ -120,7 +120,7 @@ export default function BookSession() {
             book_read_date: Date.now(),
             book_read_student_id: studentId
         }
-        await axios.post('http://localhost:8000/api/create/bookread', BookReadData)
+        await axios.post('https://brailliantweb.onrender.com/api/create/bookread', BookReadData)
             .then((res) => {
                 console.log("Book added:", res.data);
 

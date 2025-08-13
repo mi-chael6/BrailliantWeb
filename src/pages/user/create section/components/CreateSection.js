@@ -54,7 +54,7 @@ export default function CreateSection() {
         e.preventDefault();
         console.log('this the id', sectionId);
         console.log('this the instructor id', users._id);
-        axios.put(`http://localhost:8000/api/update/user/${users._id}`, { user_recent_act: 'Added Student' })
+        axios.put(`https://brailliantweb.onrender.com/api/update/user/${users._id}`, { user_recent_act: 'Added Student' })
 
         const updatedData = {
             ...newStudent,
@@ -63,7 +63,7 @@ export default function CreateSection() {
             student_instructor: users._id
         }
 
-        axios.post('http://localhost:8000/api/newstudent', updatedData)
+        axios.post('https://brailliantweb.onrender.com/api/newstudent', updatedData)
             .then((res) => {
                 console.log("Student added:", res.data);
                 alert("Student added successfully!");
@@ -98,9 +98,9 @@ export default function CreateSection() {
         setIsCreateButtonDisabled(true);
 
 
-        axios.put(`http://localhost:8000/api/update/user/${users._id}`, { user_recent_act: 'Created Section' })
+        axios.put(`https://brailliantweb.onrender.com/api/update/user/${users._id}`, { user_recent_act: 'Created Section' })
 
-        axios.post('http://localhost:8000/api/newsection', {
+        axios.post('https://brailliantweb.onrender.com/api/newsection', {
             ...newSection,
             section_instructor: users._id
         })
@@ -112,7 +112,7 @@ export default function CreateSection() {
                 console.log('ETO YUNG SECTION:', newSection.section_name);
 
                 try {
-                    const result = await axios.get(`http://localhost:8000/api/section/${newId}`);
+                    const result = await axios.get(`https://brailliantweb.onrender.com/api/section/${newId}`);
                     setSection(result.data);
                     console.log('newly created:', result.data.section.section_name);
                 } catch (fetchError) {
@@ -132,7 +132,7 @@ export default function CreateSection() {
         };
 
         setAuditTrail(newAudit);
-        await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+        await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
     };
 
     useEffect(() => {
@@ -142,7 +142,7 @@ export default function CreateSection() {
     }, [])
 
     const studentList = () => {
-        axios.get('http://localhost:8000/api/allstudents')
+        axios.get('https://brailliantweb.onrender.com/api/allstudents')
             .then((response) => {
                 setStudents(response.data)
                 console.log(students)

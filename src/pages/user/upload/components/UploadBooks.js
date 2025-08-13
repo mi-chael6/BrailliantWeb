@@ -53,7 +53,7 @@ export default function UploadBooks() {
 
     const handleUploadBook = async () => {
         const updatedData = { user_recent_act: 'Requested Upload Material' };
-        axios.put(`http://localhost:8000/api/update/user/${user._id}`, updatedData)
+        axios.put(`https://brailliantweb.onrender.com/api/update/user/${user._id}`, updatedData)
             .then(() => {
                 console.log(updatedData, "this after update");
             })
@@ -68,7 +68,7 @@ export default function UploadBooks() {
                 request_book_status: ''
             };
 
-            const response = await axios.post('http://localhost:8000/api/newrequestbook', updatedBook);
+            const response = await axios.post('https://brailliantweb.onrender.com/api/newrequestbook', updatedBook);
             const createdBook = response.data.book;
 
             console.log("Book created:", createdBook);
@@ -89,7 +89,7 @@ export default function UploadBooks() {
             setAuditTrail(auditData);
             console.log(auditData);
 
-            await axios.post('http://localhost:8000/api/newaudittrail', auditData);
+            await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', auditData);
 
         } catch (error) {
             console.error(error);
@@ -105,7 +105,7 @@ export default function UploadBooks() {
 
 
     const getFile = async () => {
-        const result = await axios.get("http://localhost:8000/get-requestfiles")
+        const result = await axios.get("https://brailliantweb.onrender.com/get-requestfiles")
         console.log(result.data.data)
         setAllImage(result.data.data)
     }
@@ -116,7 +116,7 @@ export default function UploadBooks() {
             const formData = new FormData();
             formData.append('file', file);
 
-            const result = await axios.put(`http://localhost:8000/upload-requestfiles/${bookId}`,
+            const result = await axios.put(`https://brailliantweb.onrender.com/upload-requestfiles/${bookId}`,
                 formData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
@@ -136,7 +136,7 @@ export default function UploadBooks() {
         formData.append('image', image)
 
         const result = await axios.put(
-            `http://localhost:8000/upload-requestimage/${bookId}`,
+            `https://brailliantweb.onrender.com/upload-requestimage/${bookId}`,
             formData,
             {
                 headers: { "Content-Type": "multipart/form-data" }
@@ -158,7 +158,7 @@ export default function UploadBooks() {
 
 
     const getImage = async (e) => {
-        const result = await axios.get("http://localhost:8000/get-requestimage")
+        const result = await axios.get("https://brailliantweb.onrender.com/get-requestimage")
         console.log(result.data.data)
         setAllImages(result.data.data)
     }

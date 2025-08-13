@@ -43,7 +43,7 @@ export default function AccountActivation() {
     const sendEmail = async (generatedOtp) => {
         console.log(users)
         try {
-            const response = await axios.post('http://localhost:8000/send-email', {
+            const response = await axios.post('https://brailliantweb.onrender.com/send-email', {
                 subject: "Hello from React!",
                 text: "This is a plain text email.",
                 html: "<h3>This is your account activation OTP</h3>" + generatedOtp,
@@ -69,7 +69,7 @@ export default function AccountActivation() {
         const updatedData = { ...editUser, user_status: "Activated" };
 
         if (inputOtp === otp) {
-            axios.put(`http://localhost:8000/api/update/user/${users._id}`, updatedData)
+            axios.put(`https://brailliantweb.onrender.com/api/update/user/${users._id}`, updatedData)
                 .then(() => {
                     console.log(updatedData, "this after update");
                     localStorage.setItem('users', JSON.stringify(updatedData));
@@ -85,7 +85,7 @@ export default function AccountActivation() {
                 at_date: new Date(),
                 at_action: 'Activated Account'
             };
-            await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+            await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
         }
         else {
             alert("Invalid OTP.");

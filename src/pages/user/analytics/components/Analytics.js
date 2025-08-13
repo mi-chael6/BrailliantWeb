@@ -26,7 +26,7 @@ export default function Analytics() {
     useEffect(() => {
         setUsers(JSON.parse(localStorage.getItem('users')))
 
-        axios.get('http://localhost:8000/api/students/count')
+        axios.get('https://brailliantweb.onrender.com/api/students/count')
             .then((response) => {
                 setStudentCount(response.data.count);
             })
@@ -34,14 +34,14 @@ export default function Analytics() {
                 console.error('Error fetching student count:', error);
             });
 
-        axios.get('http://localhost:8000/api/books/count')
+        axios.get('https://brailliantweb.onrender.com/api/books/count')
             .then((response) => {
                 setBooksCount(response.data.count);
             })
             .catch((error) => {
                 console.error('Error fetching student count:', error);
             });
-        axios.get('http://localhost:8000/api/books/ranked')
+        axios.get('https://brailliantweb.onrender.com/api/books/ranked')
             .then((response) => {
                 setTopBooks(response.data);
                 console.log(response.data)

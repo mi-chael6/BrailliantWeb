@@ -37,7 +37,7 @@ export default function EditSection() {
     useEffect(() => {
         if (selectedSection) {
             axios
-                .get(`http://localhost:8000/api/section/${selectedSection}`)
+                .get(`https://brailliantweb.onrender.com/api/section/${selectedSection}`)
                 .then((response) => {
                     console.log("Full section data:", response.data);
                     setSection(response.data.section);
@@ -47,7 +47,7 @@ export default function EditSection() {
                 });
         }
 
-        axios.get('http://localhost:8000/api/allstudents')
+        axios.get('https://brailliantweb.onrender.com/api/allstudents')
             .then((response) => setStudents(response.data))
             .catch((error) => console.log("Student fetch error: " + error));
 
@@ -63,7 +63,7 @@ export default function EditSection() {
 
     const handleDelete = async () => {
         axios
-            .delete(`http://localhost:8000/api/delete/student/section/${section._id}`)
+            .delete(`https://brailliantweb.onrender.com/api/delete/student/section/${section._id}`)
             .then((response) => {
                 console.log("Full section data:", response.data);
             })
@@ -71,7 +71,7 @@ export default function EditSection() {
                 console.log("Section fetch error: ", error);
             });
         axios
-            .delete(`http://localhost:8000/api/delete/section/${section._id}`)
+            .delete(`https://brailliantweb.onrender.com/api/delete/section/${section._id}`)
             .then((response) => {
                 console.log("Full section data:", response.data);
 
@@ -86,7 +86,7 @@ export default function EditSection() {
             at_date: new Date(),
             at_action: 'Deleted Section'
         };
-        await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+        await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
 
     };
     return (

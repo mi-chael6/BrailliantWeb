@@ -28,7 +28,7 @@ export default function BookDetails() {
 
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/allsections')
+        axios.get('https://brailliantweb.onrender.com/api/allsections')
             .then((response) => {
                 console.log(response.data)
                 setSections(response.data)
@@ -36,7 +36,7 @@ export default function BookDetails() {
             .catch((error) => {
                 console.log("eto ang error mo " + error)
             })
-        axios.get('http://localhost:8000/api/allstudents')
+        axios.get('https://brailliantweb.onrender.com/api/allstudents')
             .then((response) => {
                 console.log(response.data)
                 setStudents(response.data)
@@ -49,7 +49,7 @@ export default function BookDetails() {
 
     useEffect(() => {
         if (selectedStudent?.student_prev_book) {
-            axios.get(`http://localhost:8000/book/${selectedStudent.student_prev_book}`)
+            axios.get(`https://brailliantweb.onrender.com/book/${selectedStudent.student_prev_book}`)
                 .then((response) => {
                     console.log(response)
 
@@ -69,8 +69,8 @@ export default function BookDetails() {
 
     const startSession = async () => {
         console.log(selectedStudent)
-        await axios.put(`http://localhost:8000/increment/${selectedBook.book._id}`);
-        await axios.put(`http://localhost:8000/api/update/student/${selectedStudent._id}`, { student_prev_book: selectedBook.book._id });
+        await axios.put(`https://brailliantweb.onrender.com/increment/${selectedBook.book._id}`);
+        await axios.put(`https://brailliantweb.onrender.com/api/update/student/${selectedStudent._id}`, { student_prev_book: selectedBook.book._id });
 
 
 

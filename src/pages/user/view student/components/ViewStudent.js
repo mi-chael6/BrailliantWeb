@@ -37,7 +37,7 @@ export default function ViewStudent() {
             student_gender: selectedStudent.student_gender
         });
 
-        axios.get(`http://localhost:8000/api/bookread/${selectedStudent._id}`)
+        axios.get(`https://brailliantweb.onrender.com/api/bookread/${selectedStudent._id}`)
             .then((response) => {
                 console.log(response.data)
                 setBookRead(response.data.book)
@@ -63,7 +63,7 @@ export default function ViewStudent() {
 
     const handleSave = async () => {
         axios
-            .put(`http://localhost:8000/api/update/student/${selectedStudent._id}`, formData)
+            .put(`https://brailliantweb.onrender.com/api/update/student/${selectedStudent._id}`, formData)
             .then((result) => {
                 setIsEditing(false);
             })
@@ -76,7 +76,7 @@ export default function ViewStudent() {
             at_date: new Date(),
             at_action: 'Edited Student Detail'
         };
-        await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+        await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
     };
 
     const handleCancel = () => {
@@ -92,7 +92,7 @@ export default function ViewStudent() {
 
     const handleDelete = async () => {
         axios
-            .delete(`http://localhost:8000/api/delete/student/${selectedStudent._id}`)
+            .delete(`https://brailliantweb.onrender.com/api/delete/student/${selectedStudent._id}`)
             .then(() => {
                 navigate('/class');
             })
@@ -104,7 +104,7 @@ export default function ViewStudent() {
             at_date: new Date(),
             at_action: 'Removed Student'
         };
-        await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+        await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
     };
 
     const formatTime = (secs) => {

@@ -24,7 +24,7 @@ export default function ClassSettings() {
 
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/allsections/${user._id}`)
+        axios.get(`https://brailliantweb.onrender.com/api/allsections/${user._id}`)
             .then((response) => {
                 setSectionCount(response.data.sections.length)
                 console.log(response.data)
@@ -33,7 +33,7 @@ export default function ClassSettings() {
             .catch((error) => {
                 console.log("eto ang error mo " + error)
             })
-        axios.get(`http://localhost:8000/api/allstudents/${user._id}`)
+        axios.get(`https://brailliantweb.onrender.com/api/allstudents/${user._id}`)
             .then((response) => {
                 setStudentCount(response.data.students.length)
                 console.log(response.data)

@@ -102,7 +102,7 @@ export default function EditProfile() {
                 formData.append('image', image);
 
                 const result = await axios.put(
-                    `http://localhost:8000/upload-profile-icon/${id}`,
+                    `https://brailliantweb.onrender.com/upload-profile-icon/${id}`,
                     formData,
                     { headers: { "Content-Type": "multipart/form-data" } }
                 );
@@ -120,7 +120,7 @@ export default function EditProfile() {
                 ...(updatedImage && { user_img: updatedImage })
             };
 
-            await axios.put(`http://localhost:8000/api/update/user/${id}`, updatedData);
+            await axios.put(`https://brailliantweb.onrender.com/api/update/user/${id}`, updatedData);
 
             localStorage.setItem('users', JSON.stringify(updatedData));
             setEditUser(prev => ({ ...prev, user_password: '' }));
@@ -133,7 +133,7 @@ export default function EditProfile() {
                 at_date: new Date(),
                 at_action: 'Edited Profile'
             };
-            await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+            await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
 
             console.log('Profile updated:', updatedData);
             console.log('Audit trail logged:', newAudit);
@@ -150,7 +150,7 @@ export default function EditProfile() {
         }
 
         try {
-            const response = await axios.put('http://localhost:8000/api/update-password', {
+            const response = await axios.put('https://brailliantweb.onrender.com/api/update-password', {
                 password: editUser.user_password,
                 email: editUser.user_email
             });
@@ -172,7 +172,7 @@ export default function EditProfile() {
                 return;
             }
 
-            const response = await axios.post("http://localhost:8000/api/handle-credentials", {
+            const response = await axios.post("https://brailliantweb.onrender.com/api/handle-credentials", {
                 email: users.user_email, 
                 password: editUser.user_password,
             });
@@ -188,7 +188,7 @@ export default function EditProfile() {
                 user_recent_act: 'Edited Profile',
             };
 
-            const result = await axios.put(`http://localhost:8000/api/update/user/${editUser._id}`, updatedData);
+            const result = await axios.put(`https://brailliantweb.onrender.com/api/update/user/${editUser._id}`, updatedData);
 
             alert("Email successfully changed!");
             console.log(result);
@@ -206,7 +206,7 @@ export default function EditProfile() {
                 at_date: new Date(),
                 at_action: 'Changed Email',
             };
-            await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+            await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
 
         } catch (error) {
             console.error(error);

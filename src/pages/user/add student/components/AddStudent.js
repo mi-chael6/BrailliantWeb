@@ -34,7 +34,7 @@ export default function AddStudent() {
     });
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/allsections/${user._id}`)
+        axios.get(`https://brailliantweb.onrender.com/api/allsections/${user._id}`)
             .then((response) => {
                 setSections(response.data)
                 console.log(response.data)
@@ -51,7 +51,7 @@ export default function AddStudent() {
     };
 
     const studentList = (id) => {
-        axios.get(`http://localhost:8000/api/allstudents/section/${id}`)
+        axios.get(`https://brailliantweb.onrender.com/api/allstudents/section/${id}`)
             .then((response) => {
                 setStudents(response.data)
                 console.log(response.data)
@@ -105,11 +105,11 @@ export default function AddStudent() {
         }
         ///////////////////////////////////////////////////////////////////
 
-        axios.get(`http://localhost:8000/api/section/id/${selectedSection}`,)
+        axios.get(`https://brailliantweb.onrender.com/api/section/id/${selectedSection}`,)
             .then((res) => {
                 const section = res.data.section.section_name
                 const updatedNewStudent = { ...newStudent, student_section_name: section, student_instructor: user._id }
-                axios.post('http://localhost:8000/api/newstudent', updatedNewStudent)
+                axios.post('https://brailliantweb.onrender.com/api/newstudent', updatedNewStudent)
                     .then((res) => {
                         console.log("Student added:", res.data);
                         alert("Student added successfully!");
@@ -134,7 +134,7 @@ export default function AddStudent() {
 
         /////////////////////////////////////////////////////////////////////
         const updatedData = { user_recent_act: 'Added Student' };
-        axios.put(`http://localhost:8000/api/update/user/${users._id}`, updatedData)
+        axios.put(`https://brailliantweb.onrender.com/api/update/user/${users._id}`, updatedData)
             .then(() => {
                 console.log(updatedData, "this after update");
             })
@@ -150,7 +150,7 @@ export default function AddStudent() {
             at_date: new Date(),
             at_action: 'Added Student'
         };
-        await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+        await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
     };
 
 
