@@ -9,8 +9,11 @@ module.exports = app => {
     app.put('/api/update/book/:id', BookController.updateBook);
     app.delete('/api/delete/book/:id', BookController.deleteBook);
     app.get('/api/books/count', BookController.getBookCount);
+    app.put("/increment/:id", BookController.incrementBook)
+    app.get('/api/books/ranked', BookController.getRankedBooks);
 
-    // 🆕 New routes
+
+    app.get("/book/:id", BookController.findBookById)
     app.put('/upload-files/:id', BookController.uploadBookFile);
     app.put('/upload-image/:id', BookController.uploadBookImage);
     app.get('/get-files', BookController.getAllBooksFiles);

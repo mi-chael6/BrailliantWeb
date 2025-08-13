@@ -13,6 +13,8 @@ export default function Analytics() {
 
     const [studentcount, setStudentCount] = useState(0)
     const [booksCount, setBooksCount] = useState(0)
+    const [topBooks, setTopBooks] = useState([]);
+
 
     const navigate = new useNavigate()
 
@@ -38,6 +40,14 @@ export default function Analytics() {
             })
             .catch((error) => {
                 console.error('Error fetching student count:', error);
+            });
+        axios.get('http://localhost:8000/api/books/ranked')
+            .then((response) => {
+                setTopBooks(response.data);
+                console.log(response.data)
+            })
+            .catch((error) => {
+                console.error('Error fetching books:', error);
             });
 
 
@@ -102,6 +112,17 @@ export default function Analytics() {
                             <div className='analytics-tb'>
                                 <label>Top Books</label>
                                 <div className='tb'>
+                                    <ul className="top-books-list">
+                                        {topBooks.length > 0 ? (
+                                            topBooks.map((book, index) => (
+                                                <li key={book._id}>
+                                                    <span>{index + 1}. {book.book_title}</span>  {book.book_count} views
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <li>No data available</li>
+                                        )}
+                                    </ul>
 
                                 </div>
                             </div>

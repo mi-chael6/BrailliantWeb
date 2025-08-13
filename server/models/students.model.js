@@ -23,7 +23,7 @@ const StudentSchema = new Schema({
         type: String
     },
     student_section: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Section',
         required: true,
     },
@@ -31,10 +31,15 @@ const StudentSchema = new Schema({
         type: String
     },
     student_instructor: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
+    student_prev_book: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Book',
+        required: true,
+    }
 })
 
 const Student = model('Student', StudentSchema)

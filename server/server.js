@@ -72,6 +72,9 @@ ArduinoRoutes(app);
 const EmailRoutes = require('./routes/email.route');
 EmailRoutes(app);
 
+const BookReadRoutes = require('./routes/book_read.route');
+BookReadRoutes(app);
+
 
 app.listen(port, () => {
     console.log('server is running', port)

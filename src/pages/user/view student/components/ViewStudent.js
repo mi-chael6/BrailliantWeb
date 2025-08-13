@@ -12,6 +12,8 @@ export default function ViewStudent() {
     const [showDropdown, setShowDropdown] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [users, setUsers] = useState([]);
+    const [bookRead, setBookRead] = useState([]);
+
     const [isEditing, setIsEditing] = useState(false);
 
     const location = useLocation();
@@ -34,6 +36,15 @@ export default function ViewStudent() {
             student_dob: selectedStudent.student_dob,
             student_gender: selectedStudent.student_gender
         });
+
+        axios.get(`http://localhost:8000/api/bookread/${selectedStudent._id}`)
+            .then((response) => {
+                console.log(response.data)
+                setBookRead(response.data.book)
+            })
+            .catch((error) => {
+                console.log("eto ang error mo " + error)
+            })
 
     }, [selectedStudent]);
 
@@ -94,6 +105,13 @@ export default function ViewStudent() {
             at_action: 'Removed Student'
         };
         await axios.post('http://localhost:8000/api/newaudittrail', newAudit);
+    };
+
+    const formatTime = (secs) => {
+        const h = String(Math.floor(secs / 3600)).padStart(2, "0");
+        const m = String(Math.floor((secs % 3600) / 60)).padStart(2, "0");
+        const s = String(secs % 60).padStart(2, "0");
+        return `${h}:${m}:${s}`;
     };
 
     return (
@@ -213,14 +231,16 @@ export default function ViewStudent() {
                                         <thead>
                                             <tr>
                                                 <th>Book</th>
-                                                <th>Status</th>
-                                                <th>Last Viewed</th>
                                                 <th>Time Elapsed</th>
                                                 <th>Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {/* Add reading history data here */}
+                                            <tr>
+                                                <td>{bookRead?.book_read_title || ""}</td>
+                                                <td>{bookRead?.book_read_time_elapsed != null ? formatTime(bookRead.book_read_time_elapsed) : ""}</td>
+                                                <td>{bookRead?.book_read_date ? new Date(bookRead.book_read_date).toLocaleDateString() : ""}</td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

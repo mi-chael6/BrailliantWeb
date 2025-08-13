@@ -304,13 +304,7 @@ export default function EditProfile() {
                                                     onChange={(e) => setEditUser({ ...editUser, user_lname: e.target.value })}
                                                 />
                                             </div>
-                                            <p>Email</p>
-                                            <input
-                                                type="email"
-                                                placeholder="Email"
-                                                value={editUser.user_email}
-                                                onChange={(e) => setEditUser({ ...editUser, user_email: e.target.value })}
-                                            />
+                                            
                                             <p>Date of Birth</p>
                                             <input
                                                 type="date"

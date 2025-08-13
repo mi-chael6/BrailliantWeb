@@ -16,6 +16,9 @@ export default function BookDetails() {
     const [students, setStudents] = useState([])
     const [sections, setSections] = useState([])
     const [selectedSection, setSelectedSection] = useState('')
+    const [selectedStudent, setSelectedStudent] = useState('')
+    const [book, setBook] = useState('')
+
 
 
     const user = JSON.parse(localStorage.getItem('users'));
@@ -43,6 +46,42 @@ export default function BookDetails() {
             })
         //setUsers(JSON.parse(localStorage.getItem('users')))
     }, [])
+
+    useEffect(() => {
+        if (selectedStudent?.student_prev_book) {
+            axios.get(`http://localhost:8000/book/${selectedStudent.student_prev_book}`)
+                .then((response) => {
+                    console.log(response)
+
+                    setBook(response.data.book.book_title)
+
+                })
+                .catch((error) => {
+                    console.log("eto ang error mo " + error)
+                });
+        }
+        else {
+            setBook("")
+        }
+
+    }, [selectedStudent]);
+
+
+    const startSession = async () => {
+        console.log(selectedStudent)
+        await axios.put(`http://localhost:8000/increment/${selectedBook.book._id}`);
+        await axios.put(`http://localhost:8000/api/update/student/${selectedStudent._id}`, { student_prev_book: selectedBook.book._id });
+
+
+
+        navigate('/book/session', {
+            state: {
+                book: selectedBook,
+                studentId: selectedStudent._id
+            }
+        });
+    };
+
 
     return (
         <div className='container'>
@@ -89,12 +128,18 @@ export default function BookDetails() {
 
                                     <label>Student</label>
 
-                                    <select>
+                                    <select
+                                        value={selectedStudent ? JSON.stringify(selectedStudent) : ''}
+                                        onChange={(e) => {
+                                            setSelectedStudent(JSON.parse(e.target.value));
+                                        }}
+                                    >
+                                        <option value="">Select Student</option>
                                         {selectedSection !== '' &&
                                             students.students
                                                 ?.filter((student) => student.student_section === selectedSection)
                                                 .map((student) => (
-                                                    <option key={student._id} value={student._id}>
+                                                    <option key={student._id} value={JSON.stringify(student)}>
                                                         {student.student_fname} {student.student_lname}
                                                     </option>
                                                 ))}
@@ -102,15 +147,17 @@ export default function BookDetails() {
 
 
 
-                                    <label>History:</label>
+
+
+                                    <label>Last Viewed:</label>
                                     <div className='bd-history'>
-                                        <p>Last viewed:</p>
+                                        <p>{book}</p>
 
                                     </div>
                                 </div>
                                 <button
                                     className='bd-start-session'
-                                    onClick={() => { navigate('/book/session', { state: { book: selectedBook } }) }}
+                                    onClick={startSession}
                                 ><img src={require('../assets/session.png')} />START SESSION</button>
                             </div>
                         </div>

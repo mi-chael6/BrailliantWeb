@@ -43,15 +43,7 @@
     height: 250px;
 }
 
-.tb {
-    margin-top: 10px;
-    width: 90%;
-    height: 100%;
-    border: 2px solid gray;
-    border-radius: 30px;
-    height: 250px;
 
-}
 
 
 .analytics-details {
@@ -67,14 +59,17 @@
     padding: 20px;
     height: 100%;
 }
-.analytics-title{
+
+.analytics-title {
     font-weight: bold;
 }
-.analytics-count{
+
+.analytics-count {
     font-weight: bold;
     font-size: 80px;
 }
-.students-count{
+
+.students-count {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -97,4 +92,40 @@
     width: 30%;
     padding: 20px;
     height: 100%;
+}
+
+
+
+
+
+.tb {
+    margin-top: 10px;
+    width: 90%;
+    border: 2px solid gray;
+    border-radius: 30px;
+    padding: 20px;
+    background-color: #fefefe;
+}
+
+.top-books-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.top-books-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-books-list li:last-child {
+    border-bottom: none;
+}
+
+.top-books-list li span {
+    font-weight: 200;
 }

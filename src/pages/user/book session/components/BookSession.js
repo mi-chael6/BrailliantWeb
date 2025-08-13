@@ -15,8 +15,9 @@ export default function BookSession() {
     const navigate = useNavigate()
 
     const location = useLocation();
-    const selectedBook = location.state.book.book;
-    console.log(selectedBook)
+    const { book, studentId } = location.state; 
+    const selectedBook = book.book;
+    
 
     const [file, setFile] = useState(null)
     const [resultText, setResultText] = useState('')
@@ -47,6 +48,32 @@ export default function BookSession() {
         setBrailleDots(result);
         setLoading(false);
     }
+    ///////////-----------TIMER-----------///////////////////////
+    const [seconds, setSeconds] = useState(0);
+
+    useEffect(() => {
+
+        let startTime = Date.now();
+
+        const updateElapsed = () => {
+            const now = Date.now();
+            const elapsed = Math.floor((now - startTime) / 1000);
+            setSeconds(elapsed);
+        };
+
+        updateElapsed();
+        const interval = setInterval(updateElapsed, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const formatTime = (secs) => {
+        const h = String(Math.floor(secs / 3600)).padStart(2, "0");
+        const m = String(Math.floor((secs % 3600) / 60)).padStart(2, "0");
+        const s = String(secs % 60).padStart(2, "0");
+        return `${h}:${m}:${s}`;
+    };
+    ////////////////////////////////////////////
 
     useEffect(() => {
         if (!selectedBook?.book_file) return;
@@ -85,6 +112,25 @@ export default function BookSession() {
         });
     }, [currentIndex, resultText]);
 
+    const endSession = async () => {
+
+        const BookReadData = {
+            book_read_title: selectedBook.book_title,
+            book_read_time_elapsed: seconds,
+            book_read_date: Date.now(),
+            book_read_student_id: studentId
+        }
+        await axios.post('http://localhost:8000/api/create/bookread', BookReadData)
+            .then((res) => {
+                console.log("Book added:", res.data);
+
+            })
+            .catch((error) => {
+                console.error("Failed to add student", error);
+                alert("Failed to add student. Please try again.");
+            });
+    }
+
     return (
         <div className='container'>
             <div>
@@ -103,7 +149,7 @@ export default function BookSession() {
 
                             </div>
 
-                            <label>Time Elapsed</label>
+                            <label>Time Elapsed: {formatTime(seconds)}</label>
                         </div>
                         <div className='bs-translate'>
                             <div className='bs-text'>
@@ -155,7 +201,7 @@ export default function BookSession() {
 
                                 <div>
                                     <button className='bs-sync'>SYNC</button>
-                                    <button className='bs-end'>END SESSION</button>
+                                    <button className='bs-end' onClick={endSession}>END SESSION</button>
                                 </div>
                             </div>
                         </div>

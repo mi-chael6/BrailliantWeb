@@ -94,6 +94,16 @@ const findAllBooks = (req, res) => {
         })
 }
 
+const findBookById = (req, res) => {
+    Book.findById(req.params.id)
+        .then((theBook) => {
+            res.json({ book: theBook });
+        })
+        .catch((err) => {
+            res.json({ message: 'Something went wrong', err });
+        });
+};
+
 const findBookByName = (req, res) => {
     Book.findOne({ _id: req.params.namex })
         .then((theBook) => {
@@ -148,6 +158,36 @@ const getBookCount = async (req, res) => {
     }
 };
 
+const getRankedBooks = async (req, res) => {
+    try {
+        const rankedBooks = await Book.find()
+            .sort({ book_count: -1 }) 
+            .limit(5); 
+        res.json(rankedBooks);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch ranked books' });
+    }
+};
+
+const incrementBook = async (req, res) => {
+    Book.findByIdAndUpdate(
+        req.params.id,
+        { $inc: { book_count: 1 } },
+        { new: true, runValidators: true }
+    )
+        .then((updatedBook) => {
+            if (!updatedBook) {
+                return res.status(404).json({ message: 'Book not found' });
+            }
+            res.json({ book: updatedBook, status: 'Updated Successfully' });
+        })
+        .catch((err) => {
+            res.status(500).json({ message: 'Something went wrong', err });
+        });
+};
+
+
+
 
 module.exports = {
     testconnection,
@@ -160,5 +200,8 @@ module.exports = {
     uploadBookFile,
     getAllBooksFiles,
     uploadBookImage,
-    extractPDFText
+    extractPDFText,
+    findBookById,
+    incrementBook,
+    getRankedBooks
 };

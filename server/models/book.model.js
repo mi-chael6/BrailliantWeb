@@ -28,7 +28,12 @@ const BookSchema = new Schema({
     },
     book_last_modified: {
         type: Date
+    },
+    book_count: {
+        type: Number,
+        default: 0
     }
+
 })
 
 const Book = model('Book', BookSchema)
