@@ -1,4 +1,3 @@
-const { useRef } = require("react")
 const Section = require("../models/section.model")
 const mongoose = require('mongoose');
 
