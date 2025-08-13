@@ -1,4 +1,3 @@
-const { useRef } = require("react")
 const AuditTrail = require("../models/audit_trail.model");
 
 
