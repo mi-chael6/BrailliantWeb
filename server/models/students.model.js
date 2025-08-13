@@ -38,7 +38,6 @@ const StudentSchema = new Schema({
     student_prev_book: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Book',
-        required: true,
     }
 })
 
