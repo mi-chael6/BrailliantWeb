@@ -55,7 +55,7 @@ export default function AdminCreateAccountTempt() {
     const handleCreateUser = async () => {
 
         try {
-            const response = await axios.post('http://localhost:8000/send-email', {
+            const response = await axios.post('https://brailliantweb.onrender.com/send-email', {
                 subject: "Hello from React!",
                 text: "This is a plain text email.",
                 html: "<h3>Email:</h3>" + newUser.user_email + "<br/> <h3>Password:</h3>" + newUser.user_password,
@@ -67,7 +67,7 @@ export default function AdminCreateAccountTempt() {
             alert("Failed to send email");
         }
 
-        axios.post('http://localhost:8000/api/newuser', newUser)
+        axios.post('https://brailliantweb.onrender.com/api/newuser', newUser)
             .then(() => {
                 alert("User created successfully!");
                 clearForm();

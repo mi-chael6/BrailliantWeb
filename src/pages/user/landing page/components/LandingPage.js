@@ -65,7 +65,7 @@ export default function LandingPage() {
 
     const sendEmail = async (generatedOtp) => {
         try {
-            const response = await axios.post('http://localhost:8000/send-email', {
+            const response = await axios.post('https://brailliantweb.onrender.com/send-email', {
                 subject: "Hello from React!",
                 text: "This is a plain text email.",
                 html: "<h3>This is your login OTP</h3>" + generatedOtp,
@@ -79,7 +79,7 @@ export default function LandingPage() {
     };
     const sendEmailForgotpassword = async (generatedOtp) => {
         try {
-            const response = await axios.post('http://localhost:8000/send-email', {
+            const response = await axios.post('https://brailliantweb.onrender.com/send-email', {
                 subject: "Hello from React!",
                 text: "This is a plain text email.",
                 html: "<h3>This is your OTP for password renewal </h3>" + generatedOtp,
@@ -95,7 +95,7 @@ export default function LandingPage() {
     const verifyEmail = async () => {
         setPassword('')
         try {
-            const response = await axios.post("http://localhost:8000/api/verify-email", {
+            const response = await axios.post("https://brailliantweb.onrender.com/api/verify-email", {
                 email,
             });
             if (response) {
@@ -127,7 +127,7 @@ export default function LandingPage() {
     const handlePasswordSuccess = async () => {
         if (password === confirmPassword) {
             try {
-                const response = await axios.put("http://localhost:8000/api/update-password", {
+                const response = await axios.put("https://brailliantweb.onrender.com/api/update-password", {
                     password, email
                 });
                 alert("Password renew successfull!.");
@@ -148,7 +148,7 @@ export default function LandingPage() {
     const handleVerify = async () => {
     if (inputOtp === otp) {
         try {
-            await axios.post("http://localhost:8000/api/otp-verified", { email });
+            await axios.post("https://brailliantweb.onrender.com/api/otp-verified", { email });
             toggleOTPModal();
             toggleSuccessfulModal();
         } catch (err) {
@@ -162,7 +162,7 @@ export default function LandingPage() {
 
     const handleLogin = async () => {
     try {
-        const response = await axios.post("http://localhost:8000/api/handle-credentials", {
+        const response = await axios.post("https://brailliantweb.onrender.com/api/handle-credentials", {
             email,
             password
         });
@@ -187,7 +187,7 @@ export default function LandingPage() {
 };
     const handleSuccess = async () => {
         try {
-            const response = await axios.post("http://localhost:8000/api/login", {
+            const response = await axios.post("https://brailliantweb.onrender.com/api/login", {
                 email,
                 password
             });
@@ -199,7 +199,7 @@ export default function LandingPage() {
 
             if (role === "admin") {
                 localStorage.setItem("admin", JSON.stringify(user));
-                axios.put(`http://localhost:8000/api/update/admin/${user._id}`, {
+                axios.put(`https://brailliantweb.onrender.com/api/update/admin/${user._id}`, {
                     admin_last_in: new Date()
                 }, {
                     headers: {
@@ -209,7 +209,7 @@ export default function LandingPage() {
                 navigate('/admin/home')
             } else {
                 localStorage.setItem("users", JSON.stringify(user));
-                axios.put(`http://localhost:8000/api/update/user/${user._id}`, {
+                axios.put(`https://brailliantweb.onrender.com/api/update/user/${user._id}`, {
                     user_last_in: new Date()
                 }, {
                     headers: {
