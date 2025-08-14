@@ -107,7 +107,7 @@ export default function BookSession() {
         const formatted = brailleArray.map((dots, index) => `M${index + 1}:${dots}`).join('\n');
         console.log(formatted)
 
-        axios.post('http://brailliantweb.onrender.com/send-text', {
+        axios.post('https://brailliantweb.onrender.com/send-text', {
             message: formatted
         });
     }, [currentIndex, resultText]);
