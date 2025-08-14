@@ -17,7 +17,7 @@ export default function ManageLibrary() {
 
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/allbooks')
+        axios.get('https://brailliantweb.onrender.com/api/allbooks')
             .then((response) => {
                 console.log(response.data)
                 setAllBooks(response.data)
@@ -28,7 +28,7 @@ export default function ManageLibrary() {
     }, [])
 
     const handleRemove = () => {
-        axios.delete(`http://localhost:8000/api/delete/book/${selectedRowId}`)
+        axios.delete(`https://brailliantweb.onrender.com/api/delete/book/${selectedRowId}`)
             .then((response) => {
                 window.location.reload();
             })

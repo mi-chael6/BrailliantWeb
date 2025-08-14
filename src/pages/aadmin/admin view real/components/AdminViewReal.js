@@ -21,7 +21,7 @@ export default function AdminViewReal() {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/book/${selectedBook}`)
+            .get(`https://brailliantweb.onrender.com/api/book/${selectedBook}`)
             .then((response) => {
                 console.log("Full book data:", response.data.book);
                 setBook(response.data.book);
@@ -35,7 +35,7 @@ export default function AdminViewReal() {
     useEffect(() => {
         if (!book?.book_file) return;
 
-        fetch('http://localhost:8000/extract-text', {
+        fetch('https://brailliantweb.onrender.com/extract-text', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

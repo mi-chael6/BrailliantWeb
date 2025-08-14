@@ -20,7 +20,7 @@ export default function ManageAccounts() {
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/allusers')
+        axios.get('https://brailliantweb.onrender.com/api/allusers')
             .then((response) => {
                 console.log(response.data)
                 setAllUsers(response.data)

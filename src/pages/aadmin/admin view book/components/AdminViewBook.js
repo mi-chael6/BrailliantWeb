@@ -21,7 +21,7 @@ export default function AdminViewBook() {
     useEffect(() => {
         if (!selectedBook?.request_book_file) return;
 
-        fetch('http://localhost:8000/extract-text', {
+        fetch('https://brailliantweb.onrender.com/extract-text', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ export default function AdminViewBook() {
     }, []);
 
     const handleApprove = async () => {
-        axios.put(`http://localhost:8000/api/update/requestbook/${selectedBook._id}`, {
+        axios.put(`https://brailliantweb.onrender.com/api/update/requestbook/${selectedBook._id}`, {
             request_book_status: 'Approved'
         })
 
@@ -56,7 +56,7 @@ export default function AdminViewBook() {
         };
 
 
-        const response = await axios.post('http://localhost:8000/api/newbook', approvedBook);
+        const response = await axios.post('https://brailliantweb.onrender.com/api/newbook', approvedBook);
         navigate('/admin/content-request')
 
     }

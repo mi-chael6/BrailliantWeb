@@ -81,7 +81,7 @@ export default function AdminEditUser() {
 
     const handleUpdateUser = (id) => {
 
-        axios.put(`http://localhost:8000/api/update/user/${id}`, editUser)
+        axios.put(`https://brailliantweb.onrender.com/api/update/user/${id}`, editUser)
             .then(() => {
                 console.log(editUser, "this after update");
                 setEditUser({ ...editUser, user_password: '' });

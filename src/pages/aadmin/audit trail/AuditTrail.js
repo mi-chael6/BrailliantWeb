@@ -19,7 +19,7 @@ export default function AuditTrail() {
 
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/allaudittrail')
+        axios.get('https://brailliantweb.onrender.com/api/allaudittrail')
             .then((response) => {
                 setAllAudits(response.data)
                 console.log('this books', response.data)

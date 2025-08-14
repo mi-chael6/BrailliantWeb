@@ -18,7 +18,7 @@ export default function ContentRequest() {
 
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/allrequestbooks')
+        axios.get('https://brailliantweb.onrender.com/api/allrequestbooks')
             .then((response) => {
                 setAllBooks(response.data)
                 console.log('this books', response.data)

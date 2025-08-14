@@ -49,7 +49,7 @@ export default function AdminUploadBooks() {
                 book_last_modified: new Date(),
             };
 
-            const response = await axios.post('http://localhost:8000/api/newbook', updatedBook);
+            const response = await axios.post('https://brailliantweb.onrender.com/api/newbook', updatedBook);
             const createdBook = response.data.book;
 
             console.log("Book created:", createdBook);
@@ -78,7 +78,7 @@ export default function AdminUploadBooks() {
     }, [])
 
     const getFile = async () => {
-        const result = await axios.get("http://localhost:8000/get-files")
+        const result = await axios.get("https://brailliantweb.onrender.com/get-files")
         console.log(result.data.data)
         setAllImage(result.data.data)
     }
@@ -88,7 +88,7 @@ export default function AdminUploadBooks() {
             const formData = new FormData();
             formData.append('file', file);
 
-            const result = await axios.put(`http://localhost:8000/upload-files/${bookId}`,
+            const result = await axios.put(`https://brailliantweb.onrender.com/upload-files/${bookId}`,
                 formData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
@@ -108,7 +108,7 @@ export default function AdminUploadBooks() {
         formData.append('image', image)
 
         const result = await axios.put(
-            `http://localhost:8000/upload-image/${bookId}`,
+            `https://brailliantweb.onrender.com/upload-image/${bookId}`,
             formData,
             {
                 headers: { "Content-Type": "multipart/form-data" }
@@ -130,7 +130,7 @@ export default function AdminUploadBooks() {
 
 
     const getImage = async (e) => {
-        const result = await axios.get("http://localhost:8000/get-image")
+        const result = await axios.get("https://brailliantweb.onrender.com/get-image")
         console.log(result)
         setAllImages(result.data.data)
     }
