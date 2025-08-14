@@ -78,7 +78,7 @@ export default function BookSession() {
     useEffect(() => {
         if (!selectedBook?.book_file) return;
 
-        fetch('http://localhost:8000/extract-text', {
+        fetch('https://brailliantweb.onrender.com/extract-text', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
