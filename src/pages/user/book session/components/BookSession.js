@@ -83,7 +83,7 @@ export default function BookSession() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ filename: selectedBook.book_file })
+            body: JSON.stringify({ pdfUrl: selectedBook.book_file })
         })
             .then(res => res.text())
             .then(text => {
