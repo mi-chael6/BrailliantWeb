@@ -15,6 +15,7 @@
     "child_process": "^1.0.2",
     "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "express-mongo-sanitize": "^2.2.0",
     "fs": "^0.0.1-security",
