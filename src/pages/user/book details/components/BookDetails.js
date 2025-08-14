@@ -101,7 +101,7 @@ export default function BookDetails() {
                             <div className='bd-left'>
                                 <img
                                     className='bd-cover'
-                                    src={require(`../../../../images/${selectedBook.book.book_img}`)}
+                                    src={selectedBook.book.book_img}
                                 />
                                 <div className='bd-info'>
                                     <label>Title: {selectedBook.book.book_title}</label>

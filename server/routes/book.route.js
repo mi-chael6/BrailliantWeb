@@ -14,8 +14,10 @@ module.exports = app => {
 
 
     app.get("/book/:id", BookController.findBookById)
-    app.put('/upload-files/:id', BookController.uploadBookFile);
-    app.put('/upload-image/:id', BookController.uploadBookImage);
+    app.put('/upload-files/:id', BookController.bookFileMiddleware, BookController.uploadBookFile);
+    app.put('/upload-image/:id', BookController.bookImageMiddleware, BookController.uploadBookImage);
+
+
     app.get('/get-files', BookController.getAllBooksFiles);
     app.post('/extract-text', BookController.extractPDFText);
 };

@@ -98,29 +98,19 @@ export default function UploadBooks() {
     };
 
     useEffect(() => {
-        getFile()
         setUser(JSON.parse(localStorage.getItem('users')))
-        getImage()
     }, [])
 
 
-    const getFile = async () => {
-        const result = await axios.get("https://brailliantweb.onrender.com/get-requestfiles")
-        console.log(result.data.data)
-        setAllImage(result.data.data)
-    }
-
     const submitImage = async (bookId) => {
-        console.log('this book id', bookId)
         try {
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('bookFile', file);
 
-            const result = await axios.put(`https://brailliantweb.onrender.com/upload-requestfiles/${bookId}`,
+            const result = await axios.put(
+                `https://brailliantweb.onrender.com/upload-requestfiles/${bookId}`,
                 formData,
-                {
-                    headers: { "Content-Type": "multipart/form-data" },
-                }
+                { headers: { "Content-Type": "multipart/form-data" } }
             );
             console.log("File uploaded:", result.data);
         } catch (error) {
@@ -128,22 +118,21 @@ export default function UploadBooks() {
         }
     };
 
+
     const [image, setImage] = useState(null)
 
     const submitimage = async (bookId) => {
-
-        const formData = new FormData()
-        formData.append('image', image)
+        const formData = new FormData();
+        formData.append('bookImage', image); 
 
         const result = await axios.put(
             `https://brailliantweb.onrender.com/upload-requestimage/${bookId}`,
             formData,
-            {
-                headers: { "Content-Type": "multipart/form-data" }
-            }
-        )
+            { headers: { "Content-Type": "multipart/form-data" } }
+        );
+        console.log("Image uploaded:", result.data);
+    };
 
-    }
 
     const onInputChange = (e) => {
         console.log('this is png', e.target.files[0])
@@ -152,15 +141,6 @@ export default function UploadBooks() {
         setSelectedImage(
             file ? URL.createObjectURL(file) : undefined
         )
-    }
-
-    const [allImages, setAllImages] = useState(null)
-
-
-    const getImage = async (e) => {
-        const result = await axios.get("https://brailliantweb.onrender.com/get-requestimage")
-        console.log(result.data.data)
-        setAllImages(result.data.data)
     }
 
 

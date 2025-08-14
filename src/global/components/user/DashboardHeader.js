@@ -8,7 +8,7 @@ export default function DashboardHeader() {
 
     const navigate = new useNavigate()
 
-    
+
     const user = JSON.parse(localStorage.getItem('users'));
     if (!user) {
         navigate(-1)
@@ -47,9 +47,10 @@ export default function DashboardHeader() {
                             className='icon'
                             src={
                                 users.user_img
-                                    ? require(`../../../images/${users.user_img}`)
+                                    ? users.user_img
                                     : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
                             }
+
                         />
                         <p>{users.user_fname}</p>
                     </nav>
@@ -69,7 +70,7 @@ export default function DashboardHeader() {
 
                         <img
 
-                            src={require(`../../../images/${book.book_img}`)}
+                            src={book.book_img}
                             className='dashboardheader-book'
                             onClick={() => { navigate('/book/detail', { state: { book: book } }); }}
 

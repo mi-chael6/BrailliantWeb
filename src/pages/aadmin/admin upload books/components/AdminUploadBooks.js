@@ -23,7 +23,6 @@ export default function AdminUploadBooks() {
 
 
     const [file, setFile] = useState('')
-    const [allImage, setAllImage] = useState(null)
     const [user, setUser] = useState([])
     const [selectedImage, setSelectedImage] = useState('')
     const title = "Upload Books"
@@ -72,21 +71,13 @@ export default function AdminUploadBooks() {
 
 
     useEffect(() => {
-        getFile()
         setUser(JSON.parse(localStorage.getItem('users')))
-        getImage()
     }, [])
-
-    const getFile = async () => {
-        const result = await axios.get("https://brailliantweb.onrender.com/get-files")
-        console.log(result.data.data)
-        setAllImage(result.data.data)
-    }
 
     const submitImage = async (bookId) => {
         try {
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('bookFile', file);
 
             const result = await axios.put(`https://brailliantweb.onrender.com/upload-files/${bookId}`,
                 formData,
@@ -105,7 +96,7 @@ export default function AdminUploadBooks() {
     const submitimage = async (bookId) => {
 
         const formData = new FormData()
-        formData.append('image', image)
+        formData.append('bookImage', image);
 
         const result = await axios.put(
             `https://brailliantweb.onrender.com/upload-image/${bookId}`,
@@ -113,7 +104,9 @@ export default function AdminUploadBooks() {
             {
                 headers: { "Content-Type": "multipart/form-data" }
             }
+
         )
+        console.log("File uploaded:", result.data);
 
     }
 
@@ -125,16 +118,8 @@ export default function AdminUploadBooks() {
             file ? URL.createObjectURL(file) : undefined
         )
     }
-    
-    const [allImages, setAllImages] = useState(null)
 
 
-    const getImage = async (e) => {
-        const result = await axios.get("https://brailliantweb.onrender.com/get-image")
-        console.log(result)
-        setAllImages(result.data.data)
-    }
-    
 
     return (
         <div className='container'>
@@ -152,7 +137,7 @@ export default function AdminUploadBooks() {
                     <form className="uploadmaterial-container" onSubmit={(e) => {
                         e.preventDefault()
                         handleUploadBook()
-                        
+
 
                     }}>
                         <div className='left-container'>

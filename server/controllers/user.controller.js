@@ -1,41 +1,44 @@
 const User = require("../models/user.model")
 const bcrypt = require('bcrypt');
 const multer = require('multer');
-const path = require('path');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary.config');
 
 const testconnection = (req, res) => {
     res.json({ status: "Okay connection" })
 }
 
 // Setup for profile image upload
-const storages = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "../src/images/")
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now();
-        cb(null, uniqueSuffix + file.originalname);
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'user_images', // Folder in Cloudinary
+        allowed_formats: ['jpg', 'png', 'jpeg'],
     }
 });
 
-const uploads = multer({ storage: storages });
-const uploadProfileIconMiddleware = uploads.single('image');
+const uploadProfileIconMiddleware = multer({ storage: storage }).single('image');
+
+//const uploads = multer({ storage: storages });
+//const uploadProfileIconMiddleware = uploads.single('image');
 
 // Controller function
 const uploadProfileIcon = async (req, res) => {
-    const imageName = req.file.filename;
-
     try {
+        const imageUrl = req.file.path;
+
         const updateUser = await User.findByIdAndUpdate(
             req.params.id,
-            { user_img: imageName },
+            { user_img: imageUrl },
             { new: true, runValidators: true }
         );
-        res.json({ status: "ok", user: updateUser });
+
+        res.json({ status: "ok", users: updateUser,   imageUrl: imageUrl });
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
     }
 };
+
 
 const findAllUser = (req, res) => {
     User.find({}, '-user_password')

@@ -40,7 +40,7 @@ export default function AdminViewReal() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ filename: book.book_file })
+            body: JSON.stringify({ pdfUrl: book.book_file })
         })
             .then(res => res.text())
             .then(text => {
@@ -53,7 +53,7 @@ export default function AdminViewReal() {
 
     let bookImage;
     try {
-        bookImage = require(`../../../../images/${book.book_img}`);
+        bookImage = book.book_img
     } catch (err) {
         console.log(err)
     }

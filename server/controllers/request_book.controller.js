@@ -1,56 +1,71 @@
 const RequestBook = require("../models/requst_book.model");
-const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const pdfParse = require('pdf-parse');
+const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary.config');
 
-// File upload config
-const fileStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, './files'),
-    filename: (req, file, cb) => cb(null, Date.now() + file.originalname)
-});
-const uploadFile = multer({ storage: fileStorage }).single("file");
 
-// Image upload config
-const imageStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "../src/images/"),
-    filename: (req, file, cb) => cb(null, Date.now() + file.originalname)
+// Cloudinary storage for images
+const imageStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'request_book_images',
+        allowed_formats: ['jpg', 'jpeg', 'png']
+    }
 });
-const uploadImage = multer({ storage: imageStorage }).single("image");
+
+// Cloudinary storage for PDF files
+const fileStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'request_book_files',
+        resource_type: "auto",
+        access_mode: "public",
+        allowed_formats: ['pdf'],
+
+    }
+});
+
+// Middlewares
+const uploadBookImageMiddleware = multer({ storage: imageStorage }).single('bookImage');
+const uploadBookFileMiddleware = multer({ storage: fileStorage }).single('bookFile');
+
+
 
 // Controllers
 const uploadRequestBookFile = async (req, res) => {
-    uploadFile(req, res, async (err) => {
-        if (err) return res.status(500).json({ status: "error", error: err.message });
+    try {
+        const fileUrl = req.file.path;
 
-        try {
-            const updatedBook = await RequestBook.findByIdAndUpdate(
-                req.params.id,
-                { request_book_file: req.file.filename },
-                { new: true, runValidators: true }
-            );
-            res.json({ status: "ok", book: updatedBook });
-        } catch (error) {
-            res.status(500).json({ status: "error", error: error.message });
-        }
-    });
+        const updatedBook = await RequestBook.findByIdAndUpdate(
+            req.params.id,
+
+            { request_book_file: fileUrl },
+            { new: true, runValidators: true }
+        );
+
+        res.json({ status: "ok", book: updatedBook, fileUrl });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
 };
 
 const uploadRequestBookImage = async (req, res) => {
-    uploadImage(req, res, async (err) => {
-        if (err) return res.status(500).json({ status: "error", error: err.message });
+    try {
+        const imageUrl = req.file.path;
 
-        try {
-            const updatedBook = await RequestBook.findByIdAndUpdate(
-                req.params.id,
-                { request_book_img: req.file.filename },
-                { new: true, runValidators: true }
-            );
-            res.json({ status: "ok", book: updatedBook });
-        } catch (error) {
-            res.status(500).json({ status: "error", error: error.message });
-        }
-    });
+        const updatedBook = await RequestBook.findByIdAndUpdate(
+            req.params.id,
+            { request_book_img: imageUrl },
+            { new: true, runValidators: true }
+        );
+
+        res.json({ status: "ok", book: updatedBook, imageUrl });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
 };
 
 const getAllRequestBookFiles = async (req, res) => {
@@ -72,17 +87,20 @@ const getRequestBookImages = async (req, res) => {
 };
 
 const extractRequestBookPDFText = async (req, res) => {
-    const { filename } = req.body;
-    const filePath = path.join(__dirname, '..', 'files', filename);
-
-    if (!fs.existsSync(filePath)) return res.status(404).send('File not found');
-
+    const { pdfUrl } = req.body;
+    console.log(pdfUrl)
     try {
-        const buffer = fs.readFileSync(filePath);
+        const response = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
+        const buffer = Buffer.from(response.data);
+
         const result = await pdfParse(buffer);
+
         res.send(result.text);
+
+
     } catch (err) {
-        res.status(500).send('Error parsing PDF');
+        console.error('Error parsing PDF:', err);
+        res.status(500).json({ message: 'Error parsing PDF', error: err });
     }
 };
 
@@ -150,4 +168,7 @@ module.exports = {
     getAllRequestBookFiles,
     getRequestBookImages,
     extractRequestBookPDFText,
+    uploadBookImageMiddleware,
+    uploadBookFileMiddleware
 };
+

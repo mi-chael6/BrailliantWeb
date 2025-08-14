@@ -146,45 +146,45 @@ export default function LandingPage() {
     };
 
     const handleVerify = async () => {
-    if (inputOtp === otp) {
-        try {
-            await axios.post("https://brailliantweb.onrender.com/api/otp-verified", { email });
-            toggleOTPModal();
-            toggleSuccessfulModal();
-        } catch (err) {
-            alert("Failed to mark OTP verified.");
+        if (inputOtp === otp) {
+            try {
+                await axios.post("https://brailliantweb.onrender.com/api/otp-verified", { email });
+                toggleOTPModal();
+                toggleSuccessfulModal();
+            } catch (err) {
+                alert("Failed to mark OTP verified.");
+            }
+        } else {
+            alert("Invalid OTP.");
         }
-    } else {
-        alert("Invalid OTP.");
-    }
-};
+    };
 
 
     const handleLogin = async () => {
-    try {
-        const response = await axios.post("https://brailliantweb.onrender.com/api/handle-credentials", {
-            email,
-            password
-        });
+        try {
+            const response = await axios.post("https://brailliantweb.onrender.com/api/handle-credentials", {
+                email,
+                password
+            })
+            console.log(response)
+            const { requiresOtp } = response.data;
 
-        const { requiresOtp } = response.data;
+            if (requiresOtp) {
+                toggleModal();
+                toggleOTPModal();
 
-        if (requiresOtp) {
-            toggleModal();
-            toggleOTPModal();
+                const newOtp = generateOTP();
+                setOtp(newOtp);
+                sendEmail(newOtp);
+            } else {
+                toggleSuccessfulModal() // skip OTP
+            }
 
-            const newOtp = generateOTP();
-            setOtp(newOtp);
-            sendEmail(newOtp);
-        } else {
-            toggleSuccessfulModal() // skip OTP
+        } catch (error) {
+            alert("Invalid email or password. Please try again.");
+            clearForm();
         }
-
-    } catch (error) {
-        alert("Invalid email or password. Please try again.");
-        clearForm();
-    }
-};
+    };
     const handleSuccess = async () => {
         try {
             const response = await axios.post("https://brailliantweb.onrender.com/api/login", {

@@ -1,56 +1,73 @@
 const Book = require("../models/book.model");
 const multer = require('multer');
+const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 const pdfParse = require('pdf-parse');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary.config');
 
-// ---------- FILE UPLOAD CONFIG ----------
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, './files'),
-    filename: (req, file, cb) => cb(null, Date.now() + file.originalname)
-});
-const upload = multer({ storage: storage }).single("file");
+// Cloudinary storage for images
+const imageStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'book_images',
+        allowed_formats: ['jpg', 'jpeg', 'png'],
 
-// ---------- IMAGE UPLOAD CONFIG ----------
-const imgStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "../src/images/"),
-    filename: (req, file, cb) => cb(null, Date.now() + file.originalname)
+
+    }
 });
-const imgUpload = multer({ storage: imgStorage }).single("image");
+
+// Cloudinary storage for PDF files
+const fileStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'book_files',
+        allowed_formats: ['pdf'],
+        resource_type: "auto",
+        access_mode: "public"
+
+
+    }
+});
+
+// Middlewares
+const bookImageMiddleware = multer({ storage: imageStorage }).single('bookImage');
+const bookFileMiddleware = multer({ storage: fileStorage }).single('bookFile');
+
+
 
 // ---------- CONTROLLERS ----------
 const uploadBookFile = async (req, res) => {
-    upload(req, res, async (err) => {
-        if (err) return res.status(500).json({ status: "error", error: err.message });
+    try {
+        const fileUrl = req.file.path;
 
-        try {
-            const updatedBook = await Book.findByIdAndUpdate(
-                req.params.id,
-                { book_file: req.file.filename },
-                { new: true, runValidators: true }
-            );
-            res.json({ status: "ok", book: updatedBook });
-        } catch (error) {
-            res.status(500).json({ status: "error", error: error.message });
-        }
-    });
+        const updatedBook = await Book.findByIdAndUpdate(
+            req.params.id,
+            { book_file: fileUrl },
+            { new: true, runValidators: true }
+        );
+
+        res.json({ status: "ok", book: updatedBook, fileUrl });
+    } catch (error) {
+        res.status(500).json({ status: "error", message: error.message });
+    }
 };
 
 const uploadBookImage = async (req, res) => {
-    imgUpload(req, res, async (err) => {
-        if (err) return res.status(500).json({ status: "error", error: err.message });
+    try {
+        const imageUrl = req.file.path;
 
-        try {
-            const updatedBook = await Book.findByIdAndUpdate(
-                req.params.id,
-                { book_img: req.file.filename },
-                { new: true, runValidators: true }
-            );
-            res.json({ status: "ok", book: updatedBook });
-        } catch (error) {
-            res.status(500).json({ status: "error", error: error.message });
-        }
-    });
+        const updatedBook = await Book.findByIdAndUpdate(
+            req.params.id,
+            { book_img: imageUrl },
+            { new: true, runValidators: true }
+        );
+
+        res.json({ status: "ok", book: updatedBook, imageUrl });
+    } catch (error) {
+        res.status(500).json({ status: "error", message: error.message });
+    }
 };
 
 const getAllBooksFiles = async (req, res) => {
@@ -62,18 +79,22 @@ const getAllBooksFiles = async (req, res) => {
     }
 };
 
+
 const extractPDFText = async (req, res) => {
-    const { filename } = req.body;
-    const filePath = path.join(__dirname, '..', 'files', filename);
-
-    if (!fs.existsSync(filePath)) return res.status(404).send('File not found');
-
+    const { pdfUrl } = req.body;
+    console.log(pdfUrl)
     try {
-        const buffer = fs.readFileSync(filePath);
+        const response = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
+        const buffer = Buffer.from(response.data);
+
         const result = await pdfParse(buffer);
+
         res.send(result.text);
+
+
     } catch (err) {
-        res.status(500).send('Error parsing PDF');
+        console.error('Error parsing PDF:', err);
+        res.status(500).json({ message: 'Error parsing PDF', error: err });
     }
 };
 
@@ -160,8 +181,8 @@ const getBookCount = async (req, res) => {
 const getRankedBooks = async (req, res) => {
     try {
         const rankedBooks = await Book.find()
-            .sort({ book_count: -1 }) 
-            .limit(5); 
+            .sort({ book_count: -1 })
+            .limit(5);
         res.json(rankedBooks);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch ranked books' });
@@ -202,5 +223,8 @@ module.exports = {
     extractPDFText,
     findBookById,
     incrementBook,
-    getRankedBooks
+    getRankedBooks,
+    bookImageMiddleware,
+    bookFileMiddleware
 };
+

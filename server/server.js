@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express")
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -37,6 +38,8 @@ app.use('/files', express.static("files"))
 app.use(express.json());
 
 require("./config/mongoose.config")
+require("./config/cloudinary.config")
+
 
 app.use(express.json())
 app.use(cors())

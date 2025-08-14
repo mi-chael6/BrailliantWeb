@@ -10,7 +10,7 @@ export default function EditProfile() {
     const navigate = useNavigate()
     const [showDropdown, setShowDropdown] = useState(false);
     const [activeForm, setActiveForm] = useState('profile');
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState([]);
 
     const [editUser, setEditUser] = useState({
         user_fname: '',
@@ -27,15 +27,14 @@ export default function EditProfile() {
     const [imageName, setImageName] = useState('')
 
 
-
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('users'));
         if (storedUser) {
             setUsers(storedUser);
             setEditUser(storedUser);
         }
-        setUsers(JSON.parse(localStorage.getItem('users')))
     }, []);
+
 
     const confirmPassword = () => {
         const { user_fname, user_lname, user_email, user_dob, user_password } = editUser;
@@ -107,7 +106,8 @@ export default function EditProfile() {
                     { headers: { "Content-Type": "multipart/form-data" } }
                 );
 
-                updatedImage = result.data.user.user_img;
+                updatedImage = result.data.imageUrl;
+
                 setEditUser(prev => ({ ...prev, user_img: updatedImage }));
                 setUsers(prev => ({ ...prev, user_img: updatedImage }));
                 setImageName('Image updated: ' + updatedImage);
@@ -119,6 +119,7 @@ export default function EditProfile() {
                 user_recent_act: 'Edited Profile',
                 ...(updatedImage && { user_img: updatedImage })
             };
+            console.log(updatedData)
 
             await axios.put(`https://brailliantweb.onrender.com/api/update/user/${id}`, updatedData);
 
@@ -126,7 +127,7 @@ export default function EditProfile() {
             setEditUser(prev => ({ ...prev, user_password: '' }));
             setCpassword('');
             setUsers(updatedData);
-            navigate(0);
+            //navigate(0);
 
             const newAudit = {
                 at_user: users.user_email,
@@ -173,7 +174,7 @@ export default function EditProfile() {
             }
 
             const response = await axios.post("https://brailliantweb.onrender.com/api/handle-credentials", {
-                email: users.user_email, 
+                email: users.user_email,
                 password: editUser.user_password,
             });
             console.log(response.data)
@@ -234,8 +235,8 @@ export default function EditProfile() {
                         <img
                             className='icon'
                             src={
-                                users.user_img
-                                    ? require(`../../../../images/${users.user_img}`)
+                                users?.user_img
+                                    ? users.user_img
                                     : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
                             }
                         />
@@ -252,16 +253,17 @@ export default function EditProfile() {
                                 <div className="profile-table">
 
                                     <img
-                                        className='edit-profile-img'
+                                        className="edit-profile-img"
                                         src={
                                             selectedImage
                                                 ? selectedImage
                                                 : users?.user_img
-                                                    ? require(`../../../../images/${users.user_img}`)
+                                                    ? users.user_img
                                                     : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
                                         }
                                         alt="Preview"
                                     />
+
 
                                     <label for="image-upload" className='edit-profile-upload'>
                                         <img src={require('../assets/upload.png')} />Upload Picture
@@ -304,7 +306,7 @@ export default function EditProfile() {
                                                     onChange={(e) => setEditUser({ ...editUser, user_lname: e.target.value })}
                                                 />
                                             </div>
-                                            
+
                                             <p>Date of Birth</p>
                                             <input
                                                 type="date"

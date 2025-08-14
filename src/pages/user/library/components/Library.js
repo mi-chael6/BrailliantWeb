@@ -46,7 +46,7 @@ export default function Library() {
                             {filteredBooks?.map((book) => (
                                 <img
                                     key={book._id}
-                                    src={require(`../../../../images/${book.book_img}`)}
+                                    src={book.book_img}
                                     className='library-book'
                                     onClick={() => {
                                         navigate('/book/detail', { state: { book: book } });

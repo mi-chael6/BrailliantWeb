@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Header({ searchQuery, setSearchQuery }) {
 
     const navigate = new useNavigate()
-    
+
     const user = JSON.parse(localStorage.getItem('users'));
     if (!user) {
         navigate(-1)
@@ -39,13 +39,15 @@ export default function Header({ searchQuery, setSearchQuery }) {
                 />
                 <nav onClick={toggleDropdown}>
                     <img
-                        className='icon'
+                        className="icon"
                         src={
                             users.user_img
-                                ? require(`../../../images/${users.user_img}`)
+                                ? users.user_img
                                 : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
                         }
+                        alt="Profile"
                     />
+
                     <p>{users.user_fname}</p>
                 </nav>
             </div>

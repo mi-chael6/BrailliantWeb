@@ -26,14 +26,12 @@ export default function AdminViewBook() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ filename: selectedBook.request_book_file })
+            body: JSON.stringify({ pdfUrl: selectedBook.request_book_file })
         })
             .then(res => res.text())
             .then(text => {
                 const trimmedText = text.trim();
                 setResultText(trimmedText);
-
-                const initialChunk = trimmedText.slice(0, 8);
             })
             .catch(err => console.error('Error extracting text:', err));
     }, []);
@@ -79,7 +77,7 @@ export default function AdminViewBook() {
                             <div className='bd-left'>
                                 <img
                                     className='bd-cover'
-                                    src={require(`../../../../images/${selectedBook.request_book_img}`)}
+                                    src={selectedBook.request_book_img}
                                 />
                                 <div className='bd-info'>
                                     <label>Title: {selectedBook.request_book_title}</label>

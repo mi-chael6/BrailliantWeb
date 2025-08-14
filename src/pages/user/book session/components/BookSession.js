@@ -78,7 +78,7 @@ export default function BookSession() {
     useEffect(() => {
         if (!selectedBook?.book_file) return;
 
-        fetch('https://brailliantweb.onrender.com/extract-text', {
+        fetch('http://localhost:8000/extract-text', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ export default function BookSession() {
         const formatted = brailleArray.map((dots, index) => `M${index + 1}:${dots}`).join('\n');
         console.log(formatted)
 
-        axios.post('https://brailliantweb.onrender.com/send-text', {
+        axios.post('http://brailliantweb.onrender.com/send-text', {
             message: formatted
         });
     }, [currentIndex, resultText]);
