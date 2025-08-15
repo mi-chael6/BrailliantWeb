@@ -1,7 +1,3 @@
-
-
-
-
 require('dotenv').config();
 
 const express = require("express")
@@ -26,8 +22,9 @@ const nodemailer = require('nodemailer')
 // app.use(xss());               
 // app.use(mongoSanitize());
 
-const louPath = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\bin\\lou_translate.exe"`;
-const table = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\share\\liblouis\\tables\\en-us-g2.ctb"`;
+const louPath = "lou_translate"; // This is in PATH on Linux after apt-get install
+const table = "/usr/share/liblouis/tables/en-us-g2.ctb"; // Default Linux table path
+
 const tempTxtPath = "C:\\Users\\micha\\Downloads\\test.txt"; // Example input
 const brfFilePath = "C:\\Users\\micha\\Downloads\\output.brf"; // Example output
 
@@ -102,7 +99,7 @@ const upload = multer({ dest: 'uploads/' }); // Temporary folder
 app.post('/upload-pdf-to-brf', upload.single('file'), async (req, res) => {
     try {
         const pdfPath = req.file.path;
-        const pdfOriginalName = path.parse(req.file.originalname).name; // e.g., "MyFile"
+        const pdfOriginalName = path.parse(req.file.originalname).name;
         const pdfBuffer = fs.readFileSync(pdfPath);
         const data = await pdfParse(pdfBuffer);
 
@@ -112,24 +109,24 @@ app.post('/upload-pdf-to-brf', upload.single('file'), async (req, res) => {
 
         fs.writeFileSync(tempTxtPath, text, 'utf8');
 
-        const louPath = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\bin\\lou_translate.exe"`;
-        const table = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\share\\liblouis\\tables\\en-us-g2.ctb"`;
+        const louPath = "lou_translate";
+        const table = "/usr/share/liblouis/tables/en-us-g2.ctb";
         const cmd = `${louPath} --forward ${table} < ${tempTxtPath} > ${brfFilePath}`;
 
         exec(cmd, (error, stdout, stderr) => {
-            fs.unlinkSync(tempTxtPath); // Clean temp .txt
+            fs.unlinkSync(tempTxtPath);
 
             if (error) {
                 console.error(stderr);
                 return res.status(500).json({ error: 'Translation failed.' });
             }
 
-            const brfDownloadName = `${pdfOriginalName}.brf`; // ← use the PDF name
+            const brfDownloadName = `${pdfOriginalName}.brf`;
 
             res.download(brfFilePath, brfDownloadName, (err) => {
                 if (!err) {
-                    fs.unlinkSync(pdfPath);       // Clean uploaded PDF
-                    fs.unlinkSync(brfFilePath);   // Clean .brf
+                    fs.unlinkSync(pdfPath);
+                    fs.unlinkSync(brfFilePath);
                 }
             });
         });
@@ -139,6 +136,7 @@ app.post('/upload-pdf-to-brf', upload.single('file'), async (req, res) => {
         res.status(500).json({ error: 'Something went wrong.' });
     }
 });
+
 
 
 

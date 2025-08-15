@@ -1,0 +1,22 @@
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "monthly"
+
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: gomod
+    directory: /extra/generate-display-names
+    schedule:
+      interval: "monthly"

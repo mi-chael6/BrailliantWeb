@@ -1,0 +1,64 @@
+# Copyright © 2018 Bo-Cheng Jhan <school510587@yahoo.com.tw>
+# Copyright © 2019-2023 nvda-tw <https://groups.io/g/nvda-tw>
+#
+# This file is part of liblouis.
+#
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
+#
+# Currently maintained by Sponge Jhan <school510587@yahoo.com.tw>
+# Version: 2023-02
+
+# The display tables have been separated from the translation tables. But in
+# the case of this test some display relevant stuff is still defined in the
+# translation table. That is why we have to include it here.
+display: unicode.dis,zh-tw.ctb
+table:
+  language: cmn
+  region: cmn-TW
+  __assert-match: zh-tw.ctb
+flags: {testmode: bothDirections}
+tests:
+  - ['\x0009', '\t']
+  - ['\x000A', '⣀']
+  - ['\x000C', '⡘⠇']
+  - ['\x0020', '⠀']
+  - ['\x00A0', '\x00A0']
+display: unicode.dis
+table:
+  language: cmn
+  region: cmn-TW
+  __assert-match: zh-tw.ctb
+flags: {testmode: forward}
+tests:
+# Space characters
+  - ['\x000D', '⠀']
+  - ['\x2028', '⠳']
+  - ['\x202F', '⠀']
+# IPA rules
+  - ['ç', '⠖⠉'] # IPA symbol not in IPA-unicode-range.uti.
+  - ['ø', '⠳'] # IPA symbol not in IPA-unicode-range.uti.
+  - ['œ', '⠪'] # IPA symbol not in IPA-unicode-range.uti.
+  - ['ɝ', '⠖⠜⠐⠗'] # IPA symbol not in IPA-unicode-range.uti.
+  - ['θ', '⠨⠹'] # IPA symbol not in IPA-unicode-range.uti.
+  - ['ⱱ', '⠖⠧'] # IPA symbol not in IPA-unicode-range.uti.
+# Math rules
+# * Fraction and mixed number
+  - ['⅙', '⠹⠂⠌⠖⠼']
+  - - "5⅔"
+    - "⠢⠸⠹⠆⠌⠒⠸⠼"
+    - outputPos: [0, 1]
+      inputPos: [0, 1, 1, 1, 1, 1, 1, 1]
+# * The mathematical mark over the other character
+  - - " ⃗"
+    - "⠀⠣⠫⠒⠒⠕⠻"
+    - outputPos: [0, 1]
+      inputPos: [0, 1, 1, 1, 1, 1, 1]
+  - - "A⃑"
+    - "⠐⡁⠣⠫⠒⠒⠈⠕⠻"
+    - outputPos: [0, 2]
+      inputPos: [0, 0, 1, 1, 1, 1, 1, 1, 1]
+
+# Han character test cases are moved to zh-tw-dictionary.yaml.

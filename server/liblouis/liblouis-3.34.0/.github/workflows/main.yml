@@ -1,0 +1,49 @@
+name: Make check
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - README
+      - NEWS
+  pull_request:
+    branches: [ master ]
+
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
+jobs:
+  build:
+    name: Build with ${{ matrix.ucs }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true # do not compile for ucs4 if ucs2 fails
+      matrix:
+        ucs: [ucs2, ucs4]
+
+    steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+      with:
+        egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - name: Install dependencies
+      run: sudo apt-get update -qq && sudo apt-get install -y libyaml-dev texinfo texlive
+    - name: Autogen
+      run: ./autogen.sh
+    - name: Configure
+      run: ./configure
+      if: matrix.ucs == 'ucs2'
+    - name: Configure with ucs4
+      run: ./configure --enable-ucs4
+      if: matrix.ucs == 'ucs4'
+    - name: Make check
+      run: make check
+    - name: Store the test suite log
+      if: ${{ always() }} # store the test suite log even if the tests failed
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: test-suite-${{ matrix.ucs }}.log
+        path: tests/test-suite.log

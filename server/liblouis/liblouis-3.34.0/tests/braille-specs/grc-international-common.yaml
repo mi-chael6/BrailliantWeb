@@ -1,0 +1,45 @@
+# Copyright © 2019 by Dave Mielke <dave@mielke.cc>
+# Copyright © 2024 by Leonard de Ruijter <alderuijter@gmail.com>
+#
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved. This file is offered as-is,
+# without any warranty.
+
+display: unicode-without-blank.dis
+table: spaces.uti,grc-international-common.uti
+table: spaces.uti,grc-international-decomposed.uti
+table: spaces.uti,grc-international-composed.uti
+table: {language: grc, region: en}
+flags: {testmode: forward}
+tests:
+# accents
+- - ᾿ ῾ ΄ ` ´ ῀ ͺ ι ¯
+  - ⠴ ⠓ ⠈ ⠠ ⠈ ⠐ ⠔ ⠔ ⠸
+# symbols
+- - ϕ
+  - ⠋
+# punctuation
+- - ; · ᾽
+  - ⠢ ⠆ ⠄
+
+# uppercase letters
+flags: {testmode: bothDirections}
+tests:
+- - ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ
+  - ⠨⠁⠨⠃⠨⠛⠨⠙⠨⠑⠨⠵⠨⠱⠨⠹⠨⠊⠨⠅⠨⠇⠨⠍⠨⠝⠨⠭⠨⠕⠨⠏⠨⠗⠨⠎⠨⠞⠨⠥⠨⠋⠨⠯⠨⠽⠨⠺
+
+# lowercase letters
+flags: {testmode: forward}
+tests:
+- - αβγδεζηθικλμνξοπρστυφχψως
+  - ⠁⠃⠛⠙⠑⠵⠱⠹⠊⠅⠇⠍⠝⠭⠕⠏⠗⠎⠞⠥⠋⠯⠽⠺⠎
+table: spaces.uti,grc-international-common.uti
+table: spaces.uti,grc-international-decomposed.uti
+table: spaces.uti,grc-international-composed.uti
+table: {language: grc, region: en, variant: composed} # decomposed variant does not back-translate lowercase greek
+flags: {testmode: backward}
+tests:
+- - ⠁⠃⠛⠙⠑⠵⠱⠹⠊⠅⠇⠍⠝⠭⠕⠏⠗⠎⠞⠥⠋⠯⠽⠺
+  - αβγδεζηθικλμνξοπρστυφχψω
+
