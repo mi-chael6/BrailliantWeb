@@ -33,10 +33,10 @@ export default function TextToBraille() {
         const brailleArray = result.split(" ");
         const formatted = brailleArray.map((dots, index) => `M${index + 1}:${dots}`).join('\n');
         console.log(formatted)
-
-        axios.post('https://brailliantweb.onrender.com/send-text', {
-            message: formatted
-        });
+        
+                axios.post('http://localhost:8000/send-text', {
+                    message: formatted
+                });
     }
 
     useEffect(() => {

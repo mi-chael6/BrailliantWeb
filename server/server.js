@@ -94,6 +94,53 @@ app.get("/", async (req, res) => {
 
 
 
+const { exec } = require('child_process');
+const multer = require('multer');
+
+const upload = multer({ dest: 'uploads/' }); // Temporary folder
+
+app.post('/upload-pdf-to-brf', upload.single('file'), async (req, res) => {
+    try {
+        const pdfPath = req.file.path;
+        const pdfOriginalName = path.parse(req.file.originalname).name; // e.g., "MyFile"
+        const pdfBuffer = fs.readFileSync(pdfPath);
+        const data = await pdfParse(pdfBuffer);
+
+        const text = data.text;
+        const tempTxtPath = `temp_${Date.now()}.txt`;
+        const brfFilePath = `output_${Date.now()}.brf`;
+
+        fs.writeFileSync(tempTxtPath, text, 'utf8');
+
+        const louPath = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\bin\\lou_translate.exe"`;
+        const table = `"C:\\Users\\micha\\Downloads\\liblouis-3.34.0-win64\\share\\liblouis\\tables\\en-us-g2.ctb"`;
+        const cmd = `${louPath} --forward ${table} < ${tempTxtPath} > ${brfFilePath}`;
+
+        exec(cmd, (error, stdout, stderr) => {
+            fs.unlinkSync(tempTxtPath); // Clean temp .txt
+
+            if (error) {
+                console.error(stderr);
+                return res.status(500).json({ error: 'Translation failed.' });
+            }
+
+            const brfDownloadName = `${pdfOriginalName}.brf`; // ← use the PDF name
+
+            res.download(brfFilePath, brfDownloadName, (err) => {
+                if (!err) {
+                    fs.unlinkSync(pdfPath);       // Clean uploaded PDF
+                    fs.unlinkSync(brfFilePath);   // Clean .brf
+                }
+            });
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Something went wrong.' });
+    }
+});
+
+
 
 
 
