@@ -61,6 +61,7 @@ if (process.env.NODE_ENV === "development") {
     console.log("Skipping Arduino serial connection in production.");
 }
 
+
 const sendToArduino = (req, res) => {
     const { message } = req.body;
     console.log("Message to Arduino:", message);

@@ -33,10 +33,11 @@ export default function TextToBraille() {
         const brailleArray = result.split(" ");
         const formatted = brailleArray.map((dots, index) => `M${index + 1}:${dots}`).join('\n');
         console.log(formatted)
-
+        /*
         axios.post('https://brailliantweb.onrender.com/send-text', {
             message: formatted
         });
+        */
     }
 
     useEffect(() => {
@@ -71,7 +72,7 @@ export default function TextToBraille() {
 
         try {
             const response = await axios.post(
-                'https://brailliantweb-bsd9.onrender.com/upload-pdf-to-brf',
+                'https://brailliantweb.onrender.com/upload-pdf-to-brf',
                 formData,
                 {
                     responseType: 'blob',

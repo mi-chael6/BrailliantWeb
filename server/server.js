@@ -22,6 +22,7 @@ const nodemailer = require('nodemailer')
 // app.use(xss());               
 // app.use(mongoSanitize());
 
+/*
 const louPath = "lou_translate"; // This is in PATH on Linux after apt-get install
 const table = "/usr/share/liblouis/tables/en-us-g2.ctb"; // Default Linux table path
 
@@ -29,7 +30,7 @@ const tempTxtPath = "C:\\Users\\micha\\Downloads\\test.txt"; // Example input
 const brfFilePath = "C:\\Users\\micha\\Downloads\\output.brf"; // Example output
 
 const cmd = `${louPath} ${table} "${tempTxtPath}" > "${brfFilePath}"`;
-
+*/
 
 
 
@@ -111,7 +112,7 @@ app.post('/upload-pdf-to-brf', upload.single('file'), async (req, res) => {
 
         const louPath = "lou_translate";
         const table = "/usr/share/liblouis/tables/en-us-g2.ctb";
-        const cmd = `${louPath} --forward ${table} < ${tempTxtPath} > ${brfFilePath}`;
+        const cmd = `${louPath} ${table} ${tempTxtPath} > ${brfFilePath}`;
 
         exec(cmd, (error, stdout, stderr) => {
             fs.unlinkSync(tempTxtPath);
@@ -122,6 +123,16 @@ app.post('/upload-pdf-to-brf', upload.single('file'), async (req, res) => {
             }
 
             const brfDownloadName = `${pdfOriginalName}.brf`;
+
+            res.setHeader('Content-Type', 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${brfDownloadName}"`);
+            res.download(brfFilePath, brfDownloadName, (err) => {
+                if (!err) {
+                    fs.unlinkSync(pdfPath);
+                    fs.unlinkSync(brfFilePath);
+                }
+            });
+
 
             res.download(brfFilePath, brfDownloadName, (err) => {
                 if (!err) {
