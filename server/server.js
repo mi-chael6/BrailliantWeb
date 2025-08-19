@@ -1,156 +1,98 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require("express")
-const mongoose = require('mongoose')
-const cors = require('cors')
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
+const pdfParse = require("pdf-parse");
+const { exec } = require("child_process");
+const multer = require("multer");
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 
-const fs = require('fs');
-const path = require('path');
-
-const pdfParse = require('pdf-parse')
-
-const nodemailer = require('nodemailer')
-
-// const helmet = require('helmet');
-// const xss = require('xss-clean');
-// const mongoSanitize = require('express-mongo-sanitize');
-
-// app.use(helmet());             
-// app.use(xss());               
-// app.use(mongoSanitize());
-
-/*
-const louPath = "lou_translate"; // This is in PATH on Linux after apt-get install
-const table = "/usr/share/liblouis/tables/en-us-g2.ctb"; // Default Linux table path
-
-const tempTxtPath = "C:\\Users\\micha\\Downloads\\test.txt"; // Example input
-const brfFilePath = "C:\\Users\\micha\\Downloads\\output.brf"; // Example output
-
-const cmd = `${louPath} ${table} "${tempTxtPath}" > "${brfFilePath}"`;
-*/
-
-
-
-
-
-app.use('/files', express.static("files"))
-
+// Middleware
 app.use(express.json());
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use("/files", express.static("files"));
 
-require("./config/mongoose.config")
-require("./config/cloudinary.config")
+// Database + Config
+require("./config/mongoose.config");
+require("./config/cloudinary.config");
 
+// Routes
+require("./routes/user.route")(app);
+require("./routes/book.route")(app);
+require("./routes/admin.route")(app);
+require("./routes/audit_trail.route")(app);
+require("./routes/section.route")(app);
+require("./routes/student.route")(app);
+require("./routes/request_book.route")(app);
+require("./routes/login.route")(app);
+require("./routes/arduino.route")(app);
+require("./routes/email.route")(app);
+require("./routes/book_read.route")(app);
 
-app.use(express.json())
-app.use(cors())
-app.use(express.urlencoded({ extended: true }))
-
-const AllUserRoutes = require('./routes/user.route')
-AllUserRoutes(app)
-
-const AllBookRoutes = require('./routes/book.route')
-AllBookRoutes(app)
-
-const AllAdminRoutes = require('./routes/admin.route')
-AllAdminRoutes(app)
-
-const AllAuditTrailRoutes = require('./routes/audit_trail.route')
-AllAuditTrailRoutes(app)
-
-const AllSectionRoutes = require('./routes/section.route')
-AllSectionRoutes(app)
-
-const allStudentRoutes = require('./routes/student.route')
-allStudentRoutes(app)
-
-const allRequestBookRoutes = require('./routes/request_book.route')
-allRequestBookRoutes(app)
-
-const AuthRoutes = require('./routes/login.route');
-AuthRoutes(app);
-
-const ArduinoRoutes = require('./routes/arduino.route');
-ArduinoRoutes(app);
-
-const EmailRoutes = require('./routes/email.route');
-EmailRoutes(app);
-
-const BookReadRoutes = require('./routes/book_read.route');
-BookReadRoutes(app);
-
-
-app.listen(port, () => {
-    console.log('server is running', port)
-})
-
-app.get("/", async (req, res) => {
-    res.json("Hello")
-})
-
-
-
-const { exec } = require('child_process');
-const multer = require('multer');
-
-const upload = multer({ dest: 'uploads/' }); // Temporary folder
-
-app.post('/upload-pdf-to-brf', upload.single('file'), async (req, res) => {
-    try {
-        const pdfPath = req.file.path;
-        const pdfOriginalName = path.parse(req.file.originalname).name;
-        const pdfBuffer = fs.readFileSync(pdfPath);
-        const data = await pdfParse(pdfBuffer);
-
-        const text = data.text;
-        const tempTxtPath = `temp_${Date.now()}.txt`;
-        const brfFilePath = `output_${Date.now()}.brf`;
-
-        fs.writeFileSync(tempTxtPath, text, 'utf8');
-
-        const louPath = "lou_translate";
-        const table = "/usr/share/liblouis/tables/en-us-g2.ctb";
-        const cmd = `${louPath} ${table} ${tempTxtPath} > ${brfFilePath}`;
-
-        exec(cmd, (error, stdout, stderr) => {
-            fs.unlinkSync(tempTxtPath);
-
-            if (error) {
-                console.error(stderr);
-                return res.status(500).json({ error: 'Translation failed.' });
-            }
-
-            const brfDownloadName = `${pdfOriginalName}.brf`;
-
-            res.setHeader('Content-Type', 'application/octet-stream');
-            res.setHeader('Content-Disposition', `attachment; filename="${brfDownloadName}"`);
-            res.download(brfFilePath, brfDownloadName, (err) => {
-                if (!err) {
-                    fs.unlinkSync(pdfPath);
-                    fs.unlinkSync(brfFilePath);
-                }
-            });
-
-
-            res.download(brfFilePath, brfDownloadName, (err) => {
-                if (!err) {
-                    fs.unlinkSync(pdfPath);
-                    fs.unlinkSync(brfFilePath);
-                }
-            });
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Something went wrong.' });
-    }
+// Health check
+app.get("/", (req, res) => {
+  res.json("Server is running");
 });
 
+// Multer setup (temp storage for uploaded files)
+const upload = multer({ dest: "uploads/" });
 
+// PDF → BRF conversion endpoint
+app.post("/upload-pdf-to-brf", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
+    const pdfPath = req.file.path;
+    const pdfOriginalName = path.parse(req.file.originalname).name;
 
+    // Extract text from PDF
+    const pdfBuffer = fs.readFileSync(pdfPath);
+    const data = await pdfParse(pdfBuffer);
 
+    const tempTxtPath = `temp_${Date.now()}.txt`;
+    const brfFilePath = `output_${Date.now()}.brf`;
 
+    fs.writeFileSync(tempTxtPath, data.text, "utf8");
 
+    // Run lou_translate (redirect stdout → output file)
+    const louPath = "lou_translate";
+    const table = "/usr/share/liblouis/tables/en-us-g2.ctb";
+    const cmd = `${louPath} ${table} "${tempTxtPath}" > "${brfFilePath}"`;
+
+    exec(cmd, (error, stdout, stderr) => {
+      // Clean temp input no matter what
+      fs.unlinkSync(tempTxtPath);
+
+      if (error) {
+        console.error("Translation error:", stderr);
+        return res.status(500).json({ error: "Translation failed" });
+      }
+
+      const brfDownloadName = `${pdfOriginalName}.brf`;
+
+      res.download(brfFilePath, brfDownloadName, (err) => {
+        // Clean temp files after response
+        try {
+          fs.unlinkSync(pdfPath);
+          fs.unlinkSync(brfFilePath);
+        } catch (cleanupErr) {
+          console.warn("Cleanup error:", cleanupErr);
+        }
+      });
+    });
+  } catch (err) {
+    console.error("Server error:", err);
+    res.status(500).json({ error: "Something went wrong." });
+  }
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
