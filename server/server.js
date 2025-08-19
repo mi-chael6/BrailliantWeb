@@ -3,9 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const fs = require("fs");
-const path = require("path");
-const pdfParse = require("pdf-parse");
+
 const { exec } = require("child_process");
 const multer = require("multer");
 
@@ -43,46 +41,50 @@ app.get("/", (req, res) => {
 // Multer setup (temp storage for uploaded files)
 const upload = multer({ dest: "uploads/" });
 
-// PDF → BRF conversion endpoint
+const { spawn } = require("child_process");
+const fs = require("fs");
+const path = require("path");
+const pdfParse = require("pdf-parse");
+
 app.post("/upload-pdf-to-brf", upload.single("file"), async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-
     const pdfPath = req.file.path;
     const pdfOriginalName = path.parse(req.file.originalname).name;
 
-    // Extract text from PDF
+    // extract text from PDF
     const pdfBuffer = fs.readFileSync(pdfPath);
     const data = await pdfParse(pdfBuffer);
+    const text = data.text;
 
-    const tempTxtPath = `temp_${Date.now()}.txt`;
     const brfFilePath = `output_${Date.now()}.brf`;
 
-    fs.writeFileSync(tempTxtPath, data.text, "utf8");
+    // use lou_translate with forward translation and English Grade 2 table
+    const table = "/usr/share/liblouis/tables/en-us-g2.ctb"; // adjust path if needed
+    const child = spawn("lou_translate", ["--forward", table]);
 
-    // Run lou_translate (redirect stdout → output file)
-    const louPath = "lou_translate";
-    const table = "/usr/share/liblouis/tables/en-us-g2.ctb";
-    const cmd = `${louPath} ${table} "${tempTxtPath}" > "${brfFilePath}"`;
+    // pipe stdout to file
+    const outputStream = fs.createWriteStream(brfFilePath);
+    child.stdout.pipe(outputStream);
 
-    exec(cmd, (error, stdout, stderr) => {
-      // Clean temp input no matter what
-      fs.unlinkSync(tempTxtPath);
+    // pipe stderr for debugging
+    child.stderr.on("data", (data) => {
+      console.error("lou_translate error:", data.toString());
+    });
 
-      if (error) {
-        console.error("Translation error:", stderr);
+    // write text to stdin
+    child.stdin.write(text);
+    child.stdin.end();
+
+    child.on("close", (code) => {
+      if (code !== 0) {
         return res.status(500).json({ error: "Translation failed" });
       }
 
       const brfDownloadName = `${pdfOriginalName}.brf`;
-
       res.download(brfFilePath, brfDownloadName, (err) => {
-        // Clean temp files after response
-        try {
+        if (!err) {
           fs.unlinkSync(pdfPath);
           fs.unlinkSync(brfFilePath);
-        } catch (cleanupErr) {
-          console.warn("Cleanup error:", cleanupErr);
         }
       });
     });
@@ -90,9 +92,4 @@ app.post("/upload-pdf-to-brf", upload.single("file"), async (req, res) => {
     console.error("Server error:", err);
     res.status(500).json({ error: "Something went wrong." });
   }
-});
-
-// Start server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
 });
