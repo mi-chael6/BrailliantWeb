@@ -93,3 +93,7 @@ app.post("/upload-pdf-to-brf", upload.single("file"), async (req, res) => {
     res.status(500).json({ error: "Something went wrong." });
   }
 });
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
