@@ -72,7 +72,7 @@ export default function TextToBraille() {
 
         try {
             const response = await axios.post(
-                'https://brailliantweb.onrender.com/upload-pdf-to-brf',
+                'https://brailliantweb-6bwq.onrender.com/upload-pdf-to-brf',
                 formData,
                 {
                     responseType: 'blob',
