@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: brailliantweb   # you can change this if your service has another name
+    env: node
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    packages:
+      - liblouis-bin
+      - liblouis-data
