@@ -9,7 +9,6 @@ import axios from 'axios';
 export default function ManageLibrary() {
 
     const navigate = new useNavigate()
-    const title = 'Manage Library'
     const [selectedRowId, setSelectedRowId] = useState(null);
     const [allBooks, setAllBooks] = useState([])
 
@@ -44,7 +43,7 @@ export default function ManageLibrary() {
             </div>
             <div className='admin-ml-container'>
                 <div className='admin-ml-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Manage Library"} />
                 </div>
                 <div className='admin-ml-body'>
                     <div className='admin-manage-library'>

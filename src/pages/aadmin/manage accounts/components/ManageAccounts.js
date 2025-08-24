@@ -10,7 +10,6 @@ import axios from 'axios';
 export default function ManageAccounts() {
 
     const navigate = new useNavigate()
-    const title = 'Manage Accounts'
 
     const [allUsers, setAllUsers] = useState([])
     const [selectedRowId, setSelectedRowId] = useState(null);
@@ -38,7 +37,7 @@ export default function ManageAccounts() {
             </div>
             <div className='admin-ma-container'>
                 <div className='admin-ma-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Manage Accounts"} />
                 </div>
                 <div className='admin-ma-body'>
                     <div className='admin-manage-accounts'>

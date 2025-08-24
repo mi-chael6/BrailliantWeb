@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './Analytics.css'
-import './AnalyticsHeader.css'
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
 import SideNavigation from '../../../../global/components/user/SideNavigation'
+import Header from '../../../../global/components/user/Header';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
 export default function Analytics() {
+    const page="Analytics"
+    const searchBar = false
     const [showDropdown, setShowDropdown] = useState(false);
     const [users, setUsers] = useState([])
 
@@ -63,18 +65,8 @@ export default function Analytics() {
             </div>
             <div className='analytics-container'>
                 <div className='analytics-header'>
-                    <label>Class Settings</label>
-                    <nav onClick={toggleDropdown}>
-                        <img
-                            className='icon'
-                            src={
-                                users.user_img
-                                    ? users.user_img
-                                    : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                            }
-                        />
-                        <p>{users.user_fname}</p>
-                    </nav>
+                    <Header page={page} searchBar={searchBar} />
+
                 </div>
                 {showDropdown && <DropDownMenu />}
                 <div className='analytics-body'>

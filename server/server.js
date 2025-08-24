@@ -33,11 +33,6 @@ require("./routes/arduino.route")(app);
 require("./routes/email.route")(app);
 require("./routes/book_read.route")(app);
 
-// Health check
-app.get("/", (req, res) => {
-  res.json("Server is running");
-});
-
 // Multer setup (temp storage for uploaded files)
 const upload = multer({ dest: "uploads/" });
 
@@ -96,4 +91,8 @@ app.post("/upload-pdf-to-brf", upload.single("file"), async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+app.get("/", (req, res) => {
+  res.json("Server is running");
 });

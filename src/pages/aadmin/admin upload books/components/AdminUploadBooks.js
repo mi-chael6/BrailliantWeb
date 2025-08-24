@@ -25,7 +25,6 @@ export default function AdminUploadBooks() {
     const [file, setFile] = useState('')
     const [user, setUser] = useState([])
     const [selectedImage, setSelectedImage] = useState('')
-    const title = "Upload Books"
 
     const clearForm = () => {
         setNewBook({
@@ -128,7 +127,7 @@ export default function AdminUploadBooks() {
             </div>
             <div className='upload-container'>
                 <div className='upload-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Upload Books"} />
                 </div>
                 <div className='upload-body'>
                     <button className='back-btn' onClick={() => { navigate(-1) }}><img src={require('../../../../global/asset/back.png')} /></button>

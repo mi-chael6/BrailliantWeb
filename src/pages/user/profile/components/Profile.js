@@ -1,29 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import './Profile.css'
-import './ProfileHeader.css'
 import './SignInModal.css'
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
 import SideNavigation from '../../../../global/components/user/SideNavigation'
+import Header from '../../../../global/components/user/Header';
 
 export default function Profile() {
+    const page = "Profile"
+    const searchBar = false
 
     const navigate = useNavigate()
 
     const [modal, setModal] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false);
     const [users, setUsers] = useState([])
-    const [selectedImage, setSelectedImage] = useState('')
 
     useEffect(() => {
         setUsers(JSON.parse(localStorage.getItem('users')))
-        
-    }, [])
 
-    const toggleDropdown = () => {
-        setShowDropdown((prev) => !prev);
-        console.log(users)
-    };
+    }, [])
 
 
     const toggleModal = () => {
@@ -35,7 +31,7 @@ export default function Profile() {
     else {
         document.body.classList.remove('active-modal')
     }
-    
+
 
     return (
         <div className='container'>
@@ -60,18 +56,7 @@ export default function Profile() {
 
             <div className='profile-containers'>
                 <div className='profile-header'>
-                    <label>Profile</label>
-                    <nav onClick={toggleDropdown}>
-                        <img
-                            className='icon'
-                            src={
-                                users.user_img
-                                    ? users.user_img
-                                    : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                            }
-                        />
-                        <p>{users.user_fname}</p>
-                    </nav>
+                    <Header page={page} searchBar={searchBar} />
                 </div>
                 {showDropdown && <DropDownMenu />}
                 <div className='profile-body'>

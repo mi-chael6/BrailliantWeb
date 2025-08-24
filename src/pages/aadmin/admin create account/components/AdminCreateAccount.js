@@ -9,7 +9,6 @@ export default function AdminCreateAccount() {
 
     const navigate = new useNavigate()
 
-    const [title, setTitle] = useState('Create Account')
     return (
         <div className='container'>
             <div>
@@ -17,7 +16,7 @@ export default function AdminCreateAccount() {
             </div>
             <div className='admin-cs-container'>
                 <div className='admin-cs-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Create Account"} />
                 </div>
                 <div className='admin-cs-body'>
                     <div className='admin-create-account'>

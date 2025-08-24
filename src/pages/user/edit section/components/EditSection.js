@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './EditSection.css'
-import './EditSectionHeader.css'
 import SideNavigation from '../../../../global/components/user/SideNavigation'
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DeleteConfirmationModal from '../../../../global/components/user/DeleteConfirmationModal';
-
+import Header from '../../../../global/components/user/Header';
 
 
 export default function EditSection() {
@@ -62,6 +61,20 @@ export default function EditSection() {
     };
 
     const handleDelete = async () => {
+        
+        const newAudit = {
+            at_user: users.user_email,
+            at_date: new Date(),
+            at_action: 'Deleted Section',
+            at_details: {
+                at_delete_section: {
+                    section_name: section.section_name,
+                    section_level: section.section_level,
+                },
+            }
+        };
+        await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
+
         axios
             .delete(`https://brailliantweb.onrender.com/api/delete/student/section/${section._id}`)
             .then((response) => {
@@ -81,12 +94,7 @@ export default function EditSection() {
             });
         navigate('/class')
 
-        const newAudit = {
-            at_user: users.user_email,
-            at_date: new Date(),
-            at_action: 'Deleted Section'
-        };
-        await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
+
 
     };
     return (
@@ -96,18 +104,7 @@ export default function EditSection() {
             </div>
             <div className='es-container'>
                 <div className='es-header'>
-                    <label>Edit Section</label>
-                    <nav onClick={toggleDropdown}>
-                        <img
-                            className='icon'
-                            src={
-                                users.user_img
-                                    ? users.user_img
-                                    : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                            }
-                        />
-                        <p>{users.user_fname}</p>
-                    </nav>
+                    <Header page={"Edit Section"} searchBar={false} />
                 </div>
                 {showDropdown && <DropDownMenu />}
                 {showConfirmation && (

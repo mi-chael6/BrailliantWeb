@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './DeviceSettings.css'
-import './DeviceSettingsHeader.css'
 import SideNavigation from '../../../../global/components/user/SideNavigation'
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
-
+import Header from '../../../../global/components/user/Header';
 
 
 export default function DeviceSettings() {
+    const page = "Device Settings"
+    const searchBar = false
+
     const [showDropdown, setShowDropdown] = useState(false);
     const [users, setUsers] = useState([])
 
@@ -24,18 +26,7 @@ export default function DeviceSettings() {
             </div>
             <div className='ds-container'>
                 <div className='ds-header'>
-                    <label>Device Settings</label>
-                    <nav onClick={toggleDropdown}>
-                        <img
-                            className='icon'
-                            src={
-                                users.user_img
-                                    ? users.user_img
-                                    : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                            }
-                        />
-                        <p>{users.user_fname}</p>
-                    </nav>
+                    <Header page={page} searchBar={searchBar} />
                 </div>
                 {showDropdown && <DropDownMenu />}
                 <div className='ds-body'>

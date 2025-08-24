@@ -92,7 +92,7 @@ export default function BookDetails() {
             </div>
             <div className='bd-container'>
                 <div className='bd-header'>
-                    <Header />
+                    <Header page={"Book Details"} searchBar={false} />
                 </div>
                 <div className='bd-body'>
                     <div className='book-details'>

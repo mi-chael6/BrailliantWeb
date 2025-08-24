@@ -8,6 +8,7 @@ import axios from 'axios'
 
 
 export default function Library() {
+    const searchBar = true
 
     const navigate = useNavigate()
 
@@ -36,7 +37,7 @@ export default function Library() {
             </div>
             <div className='library-container'>
                 <div className='library-header'>
-                    <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                    <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} searchBar={searchBar} />
                 </div>
                 <div className='library-body'>
                     <div className='library'>

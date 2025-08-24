@@ -8,10 +8,8 @@ module.exports = app => {
     app.put('/api/update/requestbook/:id', RequestBookController.updateRequestBook);
     app.delete('/api/delete/requestbook/:id', RequestBookController.deleteRequestBook);
 
-    // Upload and PDF-related routes
     app.put('/upload-requestfiles/:id', RequestBookController.uploadBookFileMiddleware, RequestBookController.uploadRequestBookFile);
     app.get('/get-requestfiles', RequestBookController.getAllRequestBookFiles);
-
     app.put('/upload-requestimage/:id', RequestBookController.uploadBookImageMiddleware, RequestBookController.uploadRequestBookImage);
     app.get('/get-requestimage', RequestBookController.getRequestBookImages);
 

@@ -4,7 +4,7 @@
 
 .bs-title {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
 }
 
 .bs-title label {

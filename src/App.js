@@ -44,7 +44,7 @@ import AdminViewReal from './pages/aadmin/admin view real/components/AdminViewRe
 import AdminCreateAccountTempt from './pages/aadmin/admin create temporary/components/AdminCreateAccountTempt';
 import AdminEditUser from './pages/aadmin/admin edit user/components/AdminEditUser';
 import EditStudent from './pages/user/edit student/components/EditStudent';
-import AuditTrail from './pages/aadmin/audit trail/AuditTrail';
+import AuditTrail from './pages/aadmin/audit trail/components/AuditTrail';
 
 
 function App() {

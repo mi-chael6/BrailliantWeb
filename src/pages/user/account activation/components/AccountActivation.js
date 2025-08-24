@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './AccountActivation.css'
-import './AccountActivationHeader.css'
 import SideNavigation from '../../../../global/components/user/SideNavigation'
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
 import axios from 'axios';
 import './SignInModal.css'
+import Header from '../../../../global/components/user/Header';
 
 export default function AccountActivation() {
-    const hasSentEmail = useRef(false);
     const navigate = new useNavigate()
 
     const [modal, setModal] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false);
     const [users, setUsers] = useState([])
     const [editUser, setEditUser] = useState([])
+
+    const [hasSentEmail, setHasSentEmail] = useState(true)
 
     const [otp, setOtp] = useState('');
     const [inputOtp, setInputOtp] = useState('');
@@ -26,15 +27,12 @@ export default function AccountActivation() {
 
 
 
+
     useEffect(() => {
         setUsers(JSON.parse(localStorage.getItem('users')))
         setEditUser(JSON.parse(localStorage.getItem('users')))
 
-        const newOtp = generateOTP();
-        setOtp(newOtp);
-        sendEmail(newOtp);
-        hasSentEmail.current = true;
-    }, [0])
+    }, [])
 
     const toggleDropdown = () => {
         setShowDropdown((prev) => !prev);
@@ -47,7 +45,7 @@ export default function AccountActivation() {
                 subject: "Hello from React!",
                 text: "This is a plain text email.",
                 html: "<h3>This is your account activation OTP</h3>" + generatedOtp,
-                email:user.user_email
+                email: user.user_email
             });
             alert("Email sent!");
         } catch (err) {
@@ -64,6 +62,14 @@ export default function AccountActivation() {
         }
         return otp;
     };
+
+    if (hasSentEmail) {
+        const newOtp = generateOTP();
+        setOtp(newOtp);
+        sendEmail(newOtp);
+
+        setHasSentEmail(false)
+    }
 
     const handleVerify = async () => {
         const updatedData = { ...editUser, user_status: "Activated" };
@@ -126,19 +132,7 @@ export default function AccountActivation() {
             </div>
             <div className='aa-container'>
                 <div className='aa-header'>
-
-                    <label>Account Activation</label>
-                    <nav onClick={toggleDropdown}>
-                        <img
-                            className='icon'
-                            src={
-                                users.user_img
-                                    ? users.user_img
-                                    : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                            }
-                        />
-                        <p>{users.user_fname}</p>
-                    </nav>
+                    <Header page={"Account Activation"} searchBar={false} />
                 </div>
                 {showDropdown && <DropDownMenu />}
                 <div className='aa-body'>

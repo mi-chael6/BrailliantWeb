@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import './EditProfile.css'
-import './EditProfileHeader.css'
 import SideNavigation from '../../../../global/components/user/SideNavigation';
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
 import axios from 'axios';
+import Header from '../../../../global/components/user/Header';
 
 export default function EditProfile() {
     const navigate = useNavigate()
@@ -24,7 +24,6 @@ export default function EditProfile() {
     const [cpassword, setCpassword] = useState('')
     const [selectedImage, setSelectedImage] = useState('')
     const [image, setImage] = useState(null)
-    const [imageName, setImageName] = useState('')
 
 
     useEffect(() => {
@@ -33,7 +32,9 @@ export default function EditProfile() {
             setUsers(storedUser);
             setEditUser(storedUser);
         }
+
     }, []);
+
 
 
     const confirmPassword = () => {
@@ -110,7 +111,6 @@ export default function EditProfile() {
 
                 setEditUser(prev => ({ ...prev, user_img: updatedImage }));
                 setUsers(prev => ({ ...prev, user_img: updatedImage }));
-                setImageName('Image updated: ' + updatedImage);
                 console.log('Image updated to:', updatedImage);
             }
 
@@ -119,25 +119,41 @@ export default function EditProfile() {
                 user_recent_act: 'Edited Profile',
                 ...(updatedImage && { user_img: updatedImage })
             };
-            console.log(updatedData)
 
             await axios.put(`https://brailliantweb.onrender.com/api/update/user/${id}`, updatedData);
+
+            const newAudit = {
+                at_user: users.user_email,
+                at_date: new Date(),
+                at_action: 'Edited Profile',
+                at_details: {
+                    at_edit_profile: {
+                        at_ep_fn_old: users.user_fname,
+                        at_ep_ln_old: users.user_lname,
+                        at_ep_dob_old: users.user_dob,
+                        at_ep_email_old: users.user_email,
+                        at_ep_img_old: users.user_img,
+
+                        at_ep_fn_new: editUser.user_fname,
+                        at_ep_ln_new: editUser.user_lname,
+                        at_ep_dob_new: editUser.user_dob,
+                        at_ep_email_new: editUser.user_email,
+                        at_ep_img_new: editUser.user_img,
+                    }
+                }
+            };
+            const result = await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
+            console.log('Audit trail logged:', result);
+
+            console.log('Profile updated:', updatedData);
+
 
             localStorage.setItem('users', JSON.stringify(updatedData));
             setEditUser(prev => ({ ...prev, user_password: '' }));
             setCpassword('');
             setUsers(updatedData);
-            //navigate(0);
+            navigate(-1);
 
-            const newAudit = {
-                at_user: users.user_email,
-                at_date: new Date(),
-                at_action: 'Edited Profile'
-            };
-            await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
-
-            console.log('Profile updated:', updatedData);
-            console.log('Audit trail logged:', newAudit);
 
         } catch (error) {
             console.error('Profile update failed:', error);
@@ -145,11 +161,6 @@ export default function EditProfile() {
     };
 
     const handlePasswordSave = async () => {
-        if (editUser.user_password !== cpassword) {
-            alert("Passwords do not match.");
-            return;
-        }
-
         try {
             const response = await axios.put('https://brailliantweb.onrender.com/api/update-password', {
                 password: editUser.user_password,
@@ -160,6 +171,16 @@ export default function EditProfile() {
             setActiveForm('profile');
             setEditUser({ ...editUser, user_password: '' });
             setCpassword('');
+            navigate(-1);
+
+            const newAudit = {
+                at_user: cemail,
+                at_date: new Date(),
+                at_action: 'Edited Profile',
+            };
+            await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
+
+
         } catch (error) {
             console.error("Password update failed:", error);
             alert("Password update failed.");
@@ -186,7 +207,7 @@ export default function EditProfile() {
 
             const updatedData = {
                 user_email: cemail,
-                user_recent_act: 'Edited Profile',
+                user_recent_act: 'Changed Email',
             };
 
             const result = await axios.put(`https://brailliantweb.onrender.com/api/update/user/${editUser._id}`, updatedData);
@@ -194,18 +215,18 @@ export default function EditProfile() {
             alert("Email successfully changed!");
             console.log(result);
 
-            const updatedUser = { ...editUser, ...updatedData, user_password: '' };
+            const updatedUser = { ...editUser, ...updatedData };
             localStorage.setItem('users', JSON.stringify(updatedUser));
 
             setEditUser(updatedUser);
             setCpassword('');
             setActiveForm('profile');
-            navigate(0);
+            navigate(-1);
 
             const newAudit = {
                 at_user: cemail,
                 at_date: new Date(),
-                at_action: 'Changed Email',
+                at_action: 'Edited Profile',
             };
             await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
 
@@ -218,11 +239,6 @@ export default function EditProfile() {
 
 
 
-
-    const toggleDropdown = () => {
-        setShowDropdown((prev) => !prev);
-    };
-
     return (
         <div className='container'>
             <div>
@@ -230,18 +246,7 @@ export default function EditProfile() {
             </div>
             <div className='ep-container'>
                 <div className='ep-header'>
-                    <label>Edit Profile</label>
-                    <nav onClick={toggleDropdown}>
-                        <img
-                            className='icon'
-                            src={
-                                users?.user_img
-                                    ? users.user_img
-                                    : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                            }
-                        />
-                        <p>{users.user_fname}</p>
-                    </nav>
+                    <Header page={"Edit Profile"} searchBar={false} />
                 </div>
                 {showDropdown && <DropDownMenu />}
                 <div className='ep-body'>
@@ -265,7 +270,7 @@ export default function EditProfile() {
                                     />
 
 
-                                    <label for="image-upload" className='edit-profile-upload'>
+                                    <label for="image-upload" className='edit-profile-upload' >
                                         <img src={require('../assets/upload.png')} />Upload Picture
                                     </label>
 

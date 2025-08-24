@@ -17,7 +17,6 @@ export default function AdminHome() {
     }
 
 
-    const [title, setTitle] = useState('Home')
     const [bookCount, setBookCount] = useState(0)
     const [allUsers, setAllUsers] = useState(0)
     const [activatedUsers, setActivatedUsers] = useState(0);
@@ -58,7 +57,7 @@ export default function AdminHome() {
             </div>
             <div className='admin-home-container'>
                 <div className='admin-home-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Dashboard"} />
                 </div>
                 <div className='admin-home-body'>
                     <div className='admin-home'>

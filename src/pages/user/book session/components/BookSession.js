@@ -15,9 +15,9 @@ export default function BookSession() {
     const navigate = useNavigate()
 
     const location = useLocation();
-    const { book, studentId } = location.state; 
+    const { book, studentId } = location.state;
     const selectedBook = book.book;
-    
+
 
     const [file, setFile] = useState(null)
     const [resultText, setResultText] = useState('')
@@ -123,7 +123,7 @@ export default function BookSession() {
         await axios.post('https://brailliantweb.onrender.com/api/create/bookread', BookReadData)
             .then((res) => {
                 console.log("Book added:", res.data);
-
+                navigate(-1)
             })
             .catch((error) => {
                 console.error("Failed to add student", error);
@@ -138,16 +138,11 @@ export default function BookSession() {
             </div>
             <div className='bs-container'>
                 <div className='bs-header'>
-                    <Header />
+                    <Header page={selectedBook.book_title} searchBar={false} />
                 </div>
                 <div className='bs-body'>
                     <div className='book-session'>
                         <div className='bs-title'>
-                            <div>
-                                <button className='back-btn' onClick={() => { navigate(-1) }}><img src={require('../../../../global/asset/back.png')} /></button>
-                                <label>{selectedBook.book_title}</label>
-
-                            </div>
 
                             <label>Time Elapsed: {formatTime(seconds)}</label>
                         </div>

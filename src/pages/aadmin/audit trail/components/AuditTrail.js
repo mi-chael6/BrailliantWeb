@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './AuditTrail.css'
-import AdminSideNavigation from '../../../global/components/admin/AdminSideNavigation'
-import AdminHeader from '../../../global/components/admin/AdminHeader'
+import AdminSideNavigation from '../../../../global/components/admin/AdminSideNavigation'
+import AdminHeader from '../../../../global/components/admin/AdminHeader'
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function AuditTrail() {
 
     const navigate = new useNavigate()
-
-
-    const title = "Audit Trail"
 
     const [selectedRowId, setSelectedRowId] = useState(null);
     const [allAudits, setAllAudits] = useState([]);
@@ -37,7 +34,7 @@ export default function AuditTrail() {
             </div>
             <div className='admin-cr-container'>
                 <div className='admin-cr-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Audit Trail"} />
                 </div>
                 <div className='admin-cr-body'>
                     <div className='admin-content-request'>
@@ -49,7 +46,6 @@ export default function AuditTrail() {
                                     <label className='cr-count'>{audits.length}</label>
                                     <label className='cr-text'>Audits</label>
                                 </div>
-
                             </div>
                         </div>
                         <div className='admin-request'>

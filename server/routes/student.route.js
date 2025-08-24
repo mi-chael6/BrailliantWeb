@@ -1,7 +1,5 @@
 const StudentController = require('../controllers/student.controller')
 
-
-
 module.exports = app => {
     app.get('/api/allstudents', StudentController.findAllStudent)
     app.get('/api/test', StudentController.testconnection)

@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 const { Schema, model } = mongoose
 
 const StudentSchema = new Schema({
-
-
     student_lname: {
         type: String
     },

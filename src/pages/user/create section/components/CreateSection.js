@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import './CreateSection.css'
-import './CreateSectionHeader.css'
 import SideNavigation from '../../../../global/components/user/SideNavigation'
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
+import Header from '../../../../global/components/user/Header';
 import axios from 'axios'
 
 
@@ -128,7 +128,14 @@ export default function CreateSection() {
         const newAudit = {
             at_user: users.user_email,
             at_date: new Date(),
-            at_action: 'Created Section'
+            at_action: 'Created Section',
+            at_details: {
+                at_create_section: {
+                    section_name: newSection.section_name,
+                    section_level: newSection.section_level,
+                    section_instructor: users._id
+                }
+            }
         };
 
         setAuditTrail(newAudit);
@@ -137,8 +144,6 @@ export default function CreateSection() {
 
     useEffect(() => {
         setUsers(JSON.parse(localStorage.getItem('users')))
-
-
     }, [])
 
     const studentList = () => {
@@ -163,18 +168,7 @@ export default function CreateSection() {
             </div>
             <div className='createsection-container'>
                 <div className='createsection-header'>
-                    <label>Create Section</label>
-                    <nav onClick={toggleDropdown}>
-                        <img
-                            className='icon'
-                            src={
-                                users.user_img
-                                    ? users.user_img
-                                    : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                            }
-                        />
-                        <p>{users.user_fname}</p>
-                    </nav>
+                    <Header page={"Create Section"} searchBar={false} />
                 </div>
                 {showDropdown && <DropDownMenu />}
                 <div className='createsection-body'>

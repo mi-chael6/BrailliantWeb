@@ -22,12 +22,6 @@ export default function UploadBooks() {
         request_by: ''
     });
 
-    const [auditTrail, setAuditTrail] = useState({
-        at_action: '',
-        at_date: '',
-        at_user: '',
-    });
-
     const [file, setFile] = useState('')
     const [allImage, setAllImage] = useState(null)
     const [user, setUser] = useState([])
@@ -74,9 +68,12 @@ export default function UploadBooks() {
             console.log("Book created:", createdBook);
             alert("Book uploaded for request successfully!");
             navigate('/library')
+
+            var fileUrl = null
+            var imageUrl = null
             if (file) {
-                await submitImage(createdBook._id);
-                await submitimage(createdBook._id);
+                fileUrl = await submitImage(createdBook._id);
+                imageUrl = await submitimage(createdBook._id);
             }
 
             clearForm();
@@ -84,12 +81,24 @@ export default function UploadBooks() {
             const auditData = {
                 at_user: user.user_email,
                 at_date: new Date(),
-                at_action: 'Requested Upload Material'
-            };
-            setAuditTrail(auditData);
-            console.log(auditData);
+                at_action: 'Requested Upload Material',
+                at_details: {
+                    at_request_book_upload: {
+                        rb_title: newBook.request_book_title,
+                        rb_author: newBook.request_book_author,
+                        rb_genre: newBook.request_book_genre,
+                        rb_date_published: newBook.request_book_date_published,
+                        rb_level: newBook.request_book_level,
+                        rb_description: newBook.request_book_description,
+                        rb_img: imageUrl,
+                        rb_file: fileUrl,
+                        request_by: user.user_email,
+                    }
+                }
+            }
 
-            await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', auditData);
+            const result = await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', auditData);
+            console.log(result);
 
         } catch (error) {
             console.error(error);
@@ -113,6 +122,8 @@ export default function UploadBooks() {
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
             console.log("File uploaded:", result.data);
+            console.log("File uploaded:", result.data.fileUrl);
+            return result.data.fileUrl
         } catch (error) {
             console.error("File upload error:", error);
         }
@@ -123,7 +134,7 @@ export default function UploadBooks() {
 
     const submitimage = async (bookId) => {
         const formData = new FormData();
-        formData.append('bookImage', image); 
+        formData.append('bookImage', image);
 
         const result = await axios.put(
             `https://brailliantweb.onrender.com/upload-requestimage/${bookId}`,
@@ -131,6 +142,7 @@ export default function UploadBooks() {
             { headers: { "Content-Type": "multipart/form-data" } }
         );
         console.log("Image uploaded:", result.data);
+        return result.data.imageUrl
     };
 
 

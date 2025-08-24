@@ -1,7 +1,5 @@
 const SectionController = require('../controllers/section.controller')
 
-
-
 module.exports = app => {
     app.get('/api/allsections', SectionController.findAllSection)
     app.get('/api/allsections/:namex', SectionController.findSectionByTeacher)

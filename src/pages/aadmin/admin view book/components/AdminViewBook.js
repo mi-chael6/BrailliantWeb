@@ -6,7 +6,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function AdminViewBook() {
-    const title = "View Book Details"
 
     const navigate = new useNavigate()
 
@@ -66,7 +65,8 @@ export default function AdminViewBook() {
             </div>
             <div className='bd-container'>
                 <div className='bd-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Book Details"} />
+
                 </div>
                 <div className='bd-body'>
                     <div className='book-details'>

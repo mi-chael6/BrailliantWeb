@@ -1,5 +1,8 @@
-.analytics-body {
+.analytics-container{
+    width: 100%;
+}
 
+.analytics-body {
     height: 100%;
 }
 

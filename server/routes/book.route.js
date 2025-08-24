@@ -12,11 +12,9 @@ module.exports = app => {
     app.put("/increment/:id", BookController.incrementBook)
     app.get('/api/books/ranked', BookController.getRankedBooks);
 
-
     app.get("/book/:id", BookController.findBookById)
     app.put('/upload-files/:id', BookController.bookFileMiddleware, BookController.uploadBookFile);
     app.put('/upload-image/:id', BookController.bookImageMiddleware, BookController.uploadBookImage);
-
 
     app.get('/get-files', BookController.getAllBooksFiles);
     app.post('/extract-text', BookController.extractPDFText);

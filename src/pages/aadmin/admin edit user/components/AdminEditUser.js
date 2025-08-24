@@ -95,7 +95,6 @@ export default function AdminEditUser() {
 
     //////////////////
 
-    const [title, setTitle] = useState('Edit Account')
 
     return (
         <div className='container'>
@@ -104,7 +103,7 @@ export default function AdminEditUser() {
             </div>
             <div className='admin-ed-container'>
                 <div className='admin-ed-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Edit User"} />
                 </div>
                 <div className='admin-ed-body'>
                     <div className='admin-edit-account'>

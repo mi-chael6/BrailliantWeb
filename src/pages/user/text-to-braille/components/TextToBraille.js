@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './TextToBraille.css'
 import './UploadModal.css'
-import './TextToBrailleHeader.css'
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
 import BrailleLetter from "./index";
+import Header from '../../../../global/components/user/Header';
 import convertTextToBrailleDots from "../components/api/translate";
 import axios from "axios"
-
 import SideNavigation from '../../../../global/components/user/SideNavigation'
 
-
 export default function TextToBraille() {
+    const page = "Text-to-Braille"
+    const searchBar = false
     const [showDropdown, setShowDropdown] = useState(false);
     const [users, setUsers] = useState([])
 
@@ -141,18 +141,7 @@ export default function TextToBraille() {
                 </div>
                 <div className='ttb-container'>
                     <div className='ttb-header'>
-                        <label>Text-to-Braille</label>
-                        <nav onClick={toggleDropdown}>
-                            <img
-                                className='icon'
-                                src={
-                                    users.user_img
-                                        ? users.user_img
-                                        : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                                }
-                            />
-                            <p>{users.user_fname}</p>
-                        </nav>
+                        <Header page={page} searchBar={searchBar} />
                     </div>
                     {showDropdown && <DropDownMenu />}
 

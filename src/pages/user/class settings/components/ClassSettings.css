@@ -4,6 +4,10 @@
     height: 100%;
 }
 
+.cs-container {
+    width: 100%;
+}
+
 .cs-action {
     display: flex;
     width: 100%;

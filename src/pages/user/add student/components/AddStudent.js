@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './AddStudent.css'
-import './AddStudentHeader.css'
 import SideNavigation from '../../../../global/components/user/SideNavigation'
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
+import Header from '../../../../global/components/user/Header'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
 
 export default function AddStudent() {
-
 
     const navigate = new useNavigate()
 
@@ -104,10 +103,10 @@ export default function AddStudent() {
             return;
         }
         ///////////////////////////////////////////////////////////////////
-
-        axios.get(`https://brailliantweb.onrender.com/api/section/id/${selectedSection}`,)
+        var section = null
+        await axios.get(`https://brailliantweb.onrender.com/api/section/id/${selectedSection}`,)
             .then((res) => {
-                const section = res.data.section.section_name
+                section = res.data.section.section_name
                 const updatedNewStudent = { ...newStudent, student_section_name: section, student_instructor: user._id }
                 axios.post('https://brailliantweb.onrender.com/api/newstudent', updatedNewStudent)
                     .then((res) => {
@@ -148,9 +147,23 @@ export default function AddStudent() {
         const newAudit = {
             at_user: users.user_email,
             at_date: new Date(),
-            at_action: 'Added Student'
+            at_action: 'Added Student',
+            at_details: {
+                at_add_student: {
+                    student_lname: newStudent.student_lname,
+                    student_fname: newStudent.student_fname,
+                    student_mi: newStudent.student_mi,
+                    student_dob: newStudent.student_dob,
+                    //student_age: newStudent.student_age,
+                    student_gender: newStudent.student_gender,
+                    student_section: newStudent.student_section,
+                    student_section_name: section,
+                    student_instructor: user.user_email,
+                },
+            }
         };
-        await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
+        const result = await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
+        console.log(result)
     };
 
 
@@ -161,18 +174,7 @@ export default function AddStudent() {
             </div>
             <div className='as-container'>
                 <div className='as-header'>
-                    <label>Add Student</label>
-                    <nav onClick={toggleDropdown}>
-                        <img
-                            className='icon'
-                            src={
-                                users.user_img
-                                    ? users.user_img
-                                    : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                            }
-                        />
-                        <p>{users.user_fname}</p>
-                    </nav>
+                    <Header page={"Add Student"} searchBar={false} />
                 </div>
                 {showDropdown && <DropDownMenu />}
                 <div className='as-body'>

@@ -1,7 +1,5 @@
 const AuditTrailController = require('../controllers/audit_trail.controller')
 
-
-
 module.exports = app => {
     app.get('/api/allaudittrail', AuditTrailController.findAllAuditTrail)
     app.get('/api/test', AuditTrailController.testconnection)

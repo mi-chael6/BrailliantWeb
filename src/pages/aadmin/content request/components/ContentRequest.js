@@ -10,7 +10,6 @@ export default function ContentRequest() {
     const navigate = new useNavigate()
 
 
-    const title = "Content Request"
     const [selectedRowId, setSelectedRowId] = useState(null);
     const [allBooks, setAllBooks] = useState([]);
     const pendingBooks = allBooks.books?.filter(book => !book.request_book_status) || [];
@@ -36,7 +35,7 @@ export default function ContentRequest() {
             </div>
             <div className='admin-cr-container'>
                 <div className='admin-cr-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Content Request"} />
                 </div>
                 <div className='admin-cr-body'>
                     <div className='admin-content-request'>

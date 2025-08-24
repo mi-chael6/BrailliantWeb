@@ -121,7 +121,6 @@ export default function AdminCreateAccountTempt() {
         return true;
     };
 
-    const [title, setTitle] = useState('Create Account')
     return (
         <div className='container'>
             <div>
@@ -129,7 +128,7 @@ export default function AdminCreateAccountTempt() {
             </div>
             <div className='admin-cs-container'>
                 <div className='admin-cs-header'>
-                    <AdminHeader title={title} />
+                    <AdminHeader page={"Create Account"} />
                 </div>
                 <div className='admin-cs-body'>
 

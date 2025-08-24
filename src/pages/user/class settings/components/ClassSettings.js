@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, useNavigate, Route, Routes } from 'react-router-dom'
 import './ClassSettings.css'
-import './ClassSettingsHeader.css'
 import DropDownMenu from '../../../../global/components/user/DropDownMenu';
 import SideNavigation from '../../../../global/components/user/SideNavigation'
+import Header from '../../../../global/components/user/Header'
 import axios from 'axios'
 
 export default function ClassSettings() {
+
     const navigate = useNavigate()
 
     const [showDropdown, setShowDropdown] = useState(false);
@@ -45,8 +46,6 @@ export default function ClassSettings() {
         setUsers(JSON.parse(localStorage.getItem('users')))
     }, [])
 
-
-
     const toggleDropdown = () => {
         setShowDropdown((prev) => !prev);
         console.log(sections)
@@ -58,18 +57,7 @@ export default function ClassSettings() {
             </div>
             <div className='cs-container'>
                 <div className='cs-header'>
-                    <label>Class Settings</label>
-                    <nav onClick={toggleDropdown}>
-                        <img
-                            className='icon'
-                            src={
-                                users.user_img
-                                    ? users.user_img
-                                    : "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-                            }
-                        />
-                        <p>{users.user_fname}</p>
-                    </nav>
+                    <Header page={"Class Settings"} searchBar={false} />
                 </div>
                 {showDropdown && <DropDownMenu />}
                 <div className='cs-body'>

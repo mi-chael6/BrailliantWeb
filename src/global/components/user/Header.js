@@ -3,7 +3,7 @@ import './Header.css'
 import DropDownMenu from './DropDownMenu';
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Header({ searchQuery, setSearchQuery }) {
+export default function Header({ searchQuery, setSearchQuery, searchBar, page }) {
 
     const navigate = new useNavigate()
 
@@ -14,8 +14,6 @@ export default function Header({ searchQuery, setSearchQuery }) {
 
     const [showDropdown, setShowDropdown] = useState(false);
     const [users, setUsers] = useState([]);
-
-
 
     useEffect(() => {
 
@@ -30,13 +28,20 @@ export default function Header({ searchQuery, setSearchQuery }) {
     return (
         <>
             <div className='header-container'>
-                <input
-                    className='header-search'
-                    type='text'
-                    placeholder='Find a book'
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                {
+                    searchBar ? (
+                        <input
+                            className="header-search"
+                            type="text"
+                            placeholder="Find a Book"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    ) : (
+                        <label>{page}</label>
+                    )
+                }
+
                 <nav onClick={toggleDropdown}>
                     <img
                         className="icon"
