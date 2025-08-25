@@ -174,9 +174,9 @@ export default function EditProfile() {
             navigate(-1);
 
             const newAudit = {
-                at_user: cemail,
+                at_user: editUser.user_email,
                 at_date: new Date(),
-                at_action: 'Edited Profile',
+                at_action: 'Password Changed',
             };
             await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
 
@@ -227,6 +227,21 @@ export default function EditProfile() {
                 at_user: cemail,
                 at_date: new Date(),
                 at_action: 'Edited Profile',
+                at_details: {
+                    at_edit_profile: {
+                        at_ep_fn_old: users.user_fname,
+                        at_ep_ln_old: users.user_lname,
+                        at_ep_dob_old: users.user_dob,
+                        at_ep_email_old: users.user_email,
+                        at_ep_img_old: users.user_img,
+
+                        at_ep_fn_new: editUser.user_fname,
+                        at_ep_ln_new: editUser.user_lname,
+                        at_ep_dob_new: editUser.user_dob,
+                        at_ep_email_new: cemail,
+                        at_ep_img_new: editUser.user_img,
+                    }
+                }
             };
             await axios.post('https://brailliantweb.onrender.com/api/newaudittrail', newAudit);
 

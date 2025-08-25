@@ -40,7 +40,7 @@ export default function DeviceSettings() {
                             <div className='ds-info'>
                                 <label>Device Information</label>
                                 <label>Name: RBD2025</label>
-                                <label>Paired</label>
+                                <label>---------------------------</label>
                                 <label>Battery: 97%</label>
 
                             </div>

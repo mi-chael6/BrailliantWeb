@@ -4,14 +4,14 @@ import AdminSideNavigation from '../../../../global/components/admin/AdminSideNa
 import AdminHeader from '../../../../global/components/admin/AdminHeader'
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import DeleteConfirmationModal from '../../../../global/components/user/DeleteConfirmationModal';
 
 export default function ManageLibrary() {
 
     const navigate = new useNavigate()
     const [selectedRowId, setSelectedRowId] = useState(null);
     const [allBooks, setAllBooks] = useState([])
-
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
 
@@ -25,6 +25,10 @@ export default function ManageLibrary() {
                 console.log("eto ang error mo " + error)
             })
     }, [])
+
+    const toggleConfirmation = () => {
+        setShowConfirmation((prev) => !prev);
+    };
 
     const handleRemove = () => {
         axios.delete(`https://brailliantweb.onrender.com/api/delete/book/${selectedRowId}`)
@@ -46,13 +50,18 @@ export default function ManageLibrary() {
                     <AdminHeader page={"Manage Library"} />
                 </div>
                 <div className='admin-ml-body'>
+                    {showConfirmation && (
+                        <DeleteConfirmationModal
+                            onDelete={handleRemove}
+                            onCancel={toggleConfirmation}
+                        />
+                    )}
                     <div className='admin-manage-library'>
                         <div className='admin-ml-upload'>
                             <label>All Books</label>
                             <button
                                 className='ml-upload-btn'
                                 onClick={() => { navigate('/admin/upload-book') }}
-
                             >
                                 <img src={require('../assets/upload.png')} />UPLOAD BOOKS</button>
                         </div>
@@ -79,7 +88,7 @@ export default function ManageLibrary() {
                                             alert("Please select a book.");
                                             return;
                                         }
-                                        handleRemove()
+                                        toggleConfirmation()
                                     }}>Remove <img src={require('../assets/delete.png')} /></button>
                                 </div>
                             </div>

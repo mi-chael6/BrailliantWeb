@@ -70,6 +70,7 @@
     overflow-y: auto;
     background-color: #f1f0ff;
     border-radius: 20px;
+    margin-bottom: 20px;
 
 }
 
@@ -80,6 +81,20 @@
     text-align: left;
     table-layout: fixed;
     padding: 20px;
+
+}
+
+.admin-cr-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f1f0ff;
+    z-index: 2;
+    padding: 10px;
+}
+
+
+.cr-table.shortened {
+    height: 200px;
 }
 
 .admin-cr-table button {

@@ -37,7 +37,7 @@ export default function ViewStudent() {
             student_gender: selectedStudent.student_gender
         });
 
-        axios.get(`https://brailliantweb.onrender.com/api/bookread/${selectedStudent._id}`)
+        axios.get(`http://localhost:8000/api/bookread/${selectedStudent._id}`)
             .then((response) => {
                 console.log(response.data)
                 setBookRead(response.data.book)
@@ -255,13 +255,24 @@ export default function ViewStudent() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>{bookRead?.book_read_title || ""}</td>
-                                                <td>{bookRead?.book_read_time_elapsed != null ? formatTime(bookRead.book_read_time_elapsed) : ""}</td>
-                                                <td>{bookRead?.book_read_date ? new Date(bookRead.book_read_date).toLocaleDateString() : ""}</td>
-                                            </tr>
+                                            {bookRead?.map((book, index) => (
+                                                <tr key={index}>
+                                                    <td>{book.book_read_title}</td>
+                                                    <td>
+                                                        {book.book_read_time_elapsed != null
+                                                            ? formatTime(book.book_read_time_elapsed)
+                                                            : ""}
+                                                    </td>
+                                                    <td>
+                                                        {book.book_read_date
+                                                            ? new Date(book.book_read_date).toLocaleString()
+                                                            : ""}
+                                                    </td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
+
                                 </div>
                             </div>
                         </div>

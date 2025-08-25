@@ -1,0 +1,43 @@
+.at_ep_container {
+    background-color: #f1f0ff;
+    height: 20%;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.at_ep_container button {
+    all: unset;              
+    cursor: pointer; 
+    display: flex;
+    float: right;
+    width: 20px;
+    height: 20px;
+}
+
+.at_ep_container button:active {
+    transform: scale(0.95);       
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.at_ep_title{
+    font-size: 25px;
+    font-weight: bold;
+}
+.at_bold{
+    font-weight: bold;
+}
+
+.at_header{
+    display: flex;
+    flex-direction: column;
+}
+.at_header_top{
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+.at_body{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}

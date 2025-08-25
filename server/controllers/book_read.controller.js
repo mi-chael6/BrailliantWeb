@@ -16,7 +16,7 @@ const findBookReadById = (req, res) => {
 };
 
 const findBookReadByName = (req, res) => {
-    BookRead.findOne({ book_read_student_id: req.params.namex })
+    BookRead.find({ book_read_student_id: req.params.namex })
         .then((theBook) => {
             res.json({ book: theBook })
         })

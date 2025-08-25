@@ -34,13 +34,11 @@
     flex-wrap: wrap;
     overflow-y: auto;
     max-height: 500px;
-
 }
 
 .library-book {
     width: 18%;
     height: 50%;
-    background-color: black;
     border-radius: 20px;
     margin-bottom: 10px;
     box-shadow: 1px 1px 10px 8px rgba(136, 136, 136, 0.3);

@@ -68,6 +68,10 @@ export default function BookDetails() {
 
 
     const startSession = async () => {
+        if(!selectedSection || !selectedStudent){
+            alert("Select student")
+            return
+        }
         console.log(selectedStudent)
         await axios.put(`https://brailliantweb.onrender.com/increment/${selectedBook.book._id}`);
         await axios.put(`https://brailliantweb.onrender.com/api/update/student/${selectedStudent._id}`, { student_prev_book: selectedBook.book._id });
@@ -106,6 +110,8 @@ export default function BookDetails() {
                                 <div className='bd-info'>
                                     <label>Title: {selectedBook.book.book_title}</label>
                                     <label>Author: {selectedBook.book.book_author}</label>
+                                    <label>Genre: {selectedBook.book.book_genre}</label>
+                                    <label>Date Published: {new Date(selectedBook.book.book_date_published).toLocaleDateString().split("T")[0]}</label>
                                     <label>Description: {selectedBook.book.book_description}</label>
                                 </div>
                             </div>

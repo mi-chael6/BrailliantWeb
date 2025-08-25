@@ -56,7 +56,7 @@ export default function Header({ searchQuery, setSearchQuery, searchBar, page })
                     <p>{users.user_fname}</p>
                 </nav>
             </div>
-            {showDropdown && <DropDownMenu />}
+            {showDropdown && <DropDownMenu toggleDropdown={toggleDropdown} />}
         </>
     );
 }

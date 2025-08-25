@@ -40,7 +40,10 @@ export default function DashboardHeader() {
         <>
             <div className="dashboardheader-container">
                 <div className="dashboardheader-navigation">
-                    <input className="dashboardheader-search" type="text" placeholder="Find a book" />
+                    <div>
+                        <input className="dashboardheader-search" type="text" placeholder="Find a book" />
+                    </div>
+                    
 
                     <nav onClick={toggleDropdown}>
                         <img
