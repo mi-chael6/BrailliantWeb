@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
 import SessionSummaryModal from '../ui/SessionSummaryModal';
 import axios from 'axios';
+import { useSendToBrailleDevice } from '../utils/sendToBrailleDevice';
 
 const CHUNK_SIZE = 8;
 const { width } = Dimensions.get('window');
@@ -32,7 +33,8 @@ const BookReadSessionScreen = ({ route }) => {
   const [showSummary, setShowSummary] = useState(false);
   const { state, setState } = useContext(AuthContext);
   const [sessionStartTime] = useState(Date.now());
-
+  const { sendToBrailleDevice } = useSendToBrailleDevice();
+  
   const { bookTitle = 'Unknown Book', bookUrl = '', studentName = 'Unknown Student', studentId = '', bookId = '' } = route.params || {};
 
   const handleData = async () => {
@@ -95,7 +97,7 @@ const BookReadSessionScreen = ({ route }) => {
     return () => monitor.remove();
   }, [connectedDevice]);
 
-  const handleSync = () => {
+  const handleSync = async () => {
     if (!connectedDevice) {
       Alert.alert(
         'No Device Connected',
@@ -104,8 +106,18 @@ const BookReadSessionScreen = ({ route }) => {
       return;
     }
 
-    // TODO: send text to device via BLE here
-    console.log('Sending Braille data:', text);
+    const textToSend = highlighted.trim();
+    if (!textToSend) {
+      Alert.alert("No Text", "There is no highlighted text to send.");
+      return;
+    }
+
+    const success = await sendToBrailleDevice(textToSend);
+    if (success) {
+      Alert.alert("Success", `Synced "${textToSend}" to device.`);
+    } else {
+      Alert.alert("Error", "Failed to sync to device.");
+    }
   };
 
   useEffect(() => {

@@ -10,6 +10,7 @@ import {
 import CustomHeader from '../ui/CustomHeader';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
+import { useSendToBrailleDevice } from '../utils/sendToBrailleDevice'
 
 const characters = [
   { char: 'a', label: 'a(1)', image: require('../../../assets/brailleChar/a.png') },
@@ -41,8 +42,31 @@ const characters = [
 ];
 
 const Grade1 = () => {
+
   const navigation = useNavigation();
   const { state, setState } = useContext(AuthContext);
+  const { connectedDevice } = useDevice();
+  const { sendToBrailleDevice } = useSendToBrailleDevice();
+
+
+   const handleSend = async (char) => {
+    if (!connectedDevice) {
+      Alert.alert("Not Connected", "Please connect to a Braille device first.");
+      return;
+    }
+
+    try {
+      const success = await sendToBrailleDevice(char);
+      if (success) {
+        Alert.alert("✅ Sent", `Character "${char}" sent to device!`);
+      } else {
+        Alert.alert("⚠️ Error", "Failed to send character.");
+      }
+    } catch (err) {
+      console.error("BLE Error:", err);
+      Alert.alert("Error", "Something went wrong while sending.");
+    }
+  };
 
   return (
     <>
@@ -63,7 +87,7 @@ const Grade1 = () => {
                 {characters
                   .slice(rowIndex * 5, rowIndex * 5 + 5)
                   .map((item) => (
-                    <TouchableOpacity key={item.char} style={styles.brailleItem}>
+                    <TouchableOpacity onPress={() => handleSend(item.char)} key={item.char} style={styles.brailleItem}>
                       <Image source={item.image} style={styles.brailleImage} />
                       <Text style={styles.brailleLabel}>{item.label}</Text>
                     </TouchableOpacity>

@@ -7,6 +7,8 @@ import BrailleLetter from '../brailleConverter/BrailleLetter';
 import { useDevice } from '../../context/DeviceContext';
 import DisconnectionModal from '../ui/DisconnectionModal';
 import { AuthContext } from '../../context/AuthContext';
+import { useSendToBrailleDevice } from '../utils/sendToBrailleDevice';
+
 
 const { width } = Dimensions.get('window');
 
@@ -15,6 +17,7 @@ const TextToBrailleScreen = () => {
   const { connectedDevice, setConnectedDevice } = useDevice();
   const [isDisconnected, setIsDisconnected] = useState(false);
   const { state, setState } = useContext(AuthContext);
+  const { sendToBrailleDevice } = useSendToBrailleDevice();
 
   useEffect(() => {
     if (!connectedDevice) return;
@@ -27,7 +30,7 @@ const TextToBrailleScreen = () => {
     return () => monitor.remove();
   }, [connectedDevice]);
 
-  const handleSync = () => {
+  const handleSync = async () => {
     if (!connectedDevice) {
       Alert.alert(
         'No Device Connected',
@@ -36,8 +39,25 @@ const TextToBrailleScreen = () => {
       return;
     }
 
-    // TODO: send text to device via BLE here
-    console.log('Sending Braille data:', text);
+    if (!text.trim()) {
+      Alert.alert("Empty Text", "Please type something to send.");
+      return;
+    }
+
+    try {
+      console.log("Sending text:", text);
+
+      const success = await sendToBrailleDevice(text);
+
+      if (success) {
+        Alert.alert("✅ Success", "Text sent to Braille device!");
+      } else {
+        Alert.alert("⚠️ Error", "Failed to send text to device.");
+      }
+    } catch (error) {
+      console.error("BLE Send Error:", error);
+      Alert.alert("Error", "Something went wrong while sending.");
+    }
   };
 
   const brailleDots = convertTextToBrailleDots(text).split(' ');
