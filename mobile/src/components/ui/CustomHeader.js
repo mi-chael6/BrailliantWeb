@@ -88,7 +88,7 @@ const CustomHeader = ({ title = '', subtitle = '', onBack }) => {
                 <Text style={styles.title}>{title}</Text>
                 <Text style={styles.subtitle}>{subtitle}</Text>
               </>
-              : <Text style={[styles.title, { fontSize: 25 }]}>{title}</Text>}
+              : <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.title, { fontSize: 25 }]}>{title}</Text>}
           </View>
         </View>
         <View style={styles.rightIcons}>
@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex:1,
   },
   backButton: {
     marginRight: 8,

@@ -76,11 +76,10 @@ const TextToBrailleScreen = () => {
             multiline
             placeholder="Input text here...."
             style={styles.input}
-            maxLength={8}
             value={text}
             onChangeText={setText}
           />
-          <Text style={styles.charCount}>{text.length}/8 characters</Text>
+          <Text style={styles.charCount}>{text.length} characters</Text>
         </View>
 
         <Text style={styles.previewLabel}>PREVIEW</Text>

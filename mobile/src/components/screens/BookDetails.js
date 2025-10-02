@@ -71,7 +71,14 @@ const BookDetailsScreen = ({ route }) => {
         <View style={styles.content}>
           {/* Book Info */}
           <View style={styles.bookRow}>
-            <Image source={book.book_img} style={styles.bookImage} />
+            <Image
+              source={book?.book_img 
+                ? { uri: book?.book_img } 
+                : require('../../../assets/noimg.png')
+              }
+              style={styles.bookImage}
+              onError={(e) => console.log('Image loading error:', e.nativeEvent.error)}
+            />
             <View style={styles.bookInfo}>
               <Text style={styles.bookText}>Author: {book?.book_author || 'Unknown'}</Text>
               <Text style={styles.bookText}>Genre: {book?.book_genre || 'Unknown'}</Text>

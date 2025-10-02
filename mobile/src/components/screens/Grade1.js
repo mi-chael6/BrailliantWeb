@@ -11,6 +11,8 @@ import CustomHeader from '../ui/CustomHeader';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
 import { useSendToBrailleDevice } from '../utils/sendToBrailleDevice'
+import { useDevice } from '../../context/DeviceContext';
+import { Alert } from 'react-native';
 
 const characters = [
   { char: 'a', label: 'a(1)', image: require('../../../assets/brailleChar/a.png') },
