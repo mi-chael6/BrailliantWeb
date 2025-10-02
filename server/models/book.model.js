@@ -32,8 +32,10 @@ const BookSchema = new Schema({
     book_count: {
         type: Number,
         default: 0
+    },
+    book_avg_read_time: {
+        type: Number,
     }
-
 })
 
 const Book = model('Book', BookSchema)

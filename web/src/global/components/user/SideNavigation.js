@@ -27,9 +27,9 @@ export default function SideNavigation() {
 
       <hr />
       <a href='/profile'><img src={require('../../asset/User.png')} /> Profile</a>
-      {/* <hr />
+      <hr />
       <label>Device: --</label>
-      <a href='/device-settings'><img src={require('../../asset/Settings.png')} /> Device Settings</a> */}
+      <a href='/device-settings'><img src={require('../../asset/Settings.png')} /> Device Settings</a>
     </div>
   )
 }

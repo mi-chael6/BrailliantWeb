@@ -122,7 +122,7 @@ export default function BookSession() {
         };
         setBookData(BookReadData);
         await axios.post('https://brailliantweb.onrender.com/api/create/bookread', BookReadData);
-        await axios.post('http://localhost:8000/summarize-progress', { student_id: studentId });
+        await axios.post('https://brailliantweb.onrender.com/summarize-progress', { student_id: studentId });
     };
 
     const togggleConfirmationModal = () => setConfirmationModal(!confirmationModal);

@@ -22,7 +22,7 @@ export default function Library() {
             .then((response) => {
                 setLoading(false);
                 setAllBooks(response.data);
-
+                console.log(response.data)
                 const allGenres = response.data.books?.map((b) => b.book_genre);
                 const uniqueGenres = [...new Set(allGenres)];
                 setGenres(uniqueGenres);
@@ -30,6 +30,7 @@ export default function Library() {
             .catch((error) => {
                 console.log("eto ang error mo " + error);
             });
+
     }, []);
 
     const filteredBooks = book.books

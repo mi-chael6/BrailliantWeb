@@ -104,15 +104,41 @@ const testconnection = (req, res) => {
     res.json({ status: "Okay connection" })
 }
 
-const findAllBooks = (req, res) => {
-    Book.find()
-        .then((allBooks) => {
-            res.json({ books: allBooks })
-        })
-        .catch((err) => {
-            res.json({ message: 'Something went wrong', err })
-        })
-}
+const findAllBooks = async (req, res) => {
+    try {
+        const booksWithAvg = await Book.aggregate([
+            {
+                $lookup: {
+                    from: "bookreads", 
+                    localField: "book_title",
+                    foreignField: "book_read_title",
+                    as: "reads"
+                }
+            },
+            {
+                $addFields: {
+                    book_avg_read_time: {
+                        $cond: [
+                            { $gt: [{ $size: "$reads" }, 0] },
+                            { $avg: "$reads.book_read_time_elapsed" },
+                            null
+                        ]
+                    }
+                }
+            },
+            {
+                $project: {
+                    reads: 0 
+                }
+            }
+        ]);
+
+        res.json({ books: booksWithAvg });
+    } catch (err) {
+        res.status(500).json({ message: "Something went wrong", err });
+    }
+};
+
 
 const findBookById = (req, res) => {
     Book.findById(req.params.id)
